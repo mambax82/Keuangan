@@ -1,0 +1,3145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+<meta name="theme-color" content="#1C1F2A"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Keuangan"/>
+<title>Keuangan Keluarga</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #FBF6EC;
+  --paper: #F2EBDD;
+  --shadow: #D6CDB9;
+  --ink: #1C1F2A;
+  --muted: #7A7565;
+  --rust: #A6573D;
+  --rustBg: #FEE2E2;
+  --gold: #A87838;
+  --goldBg: #F5EDD9;
+  --forest: #0F4C2C;
+  --forestL: #1F6E47;
+  --forestBg: #E8F3ED;
+  --navy: #2D3656;
+  --sb: env(safe-area-inset-bottom, 0px);
+  --st: env(safe-area-inset-top, 0px);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: "Plus Jakarta Sans", -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+  padding-bottom: calc(80px + var(--sb));
+  letter-spacing: -0.01em;
+}
+
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+input, textarea, select {
+  font-family: inherit; font-size: 14px;
+  -webkit-appearance: none; appearance: none;
+}
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--ink) !important; }
+
+.view {
+  display: none;
+  padding: calc(var(--st) + 16px) 20px 24px;
+  max-width: 700px;
+  margin: 0 auto;
+  animation: fu .2s ease-out;
+}
+.view.on { display: block; }
+@keyframes fu { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Header */
+.header {
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 14px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.header-l .label-tiny {
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--rust);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.header-l h1 {
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.5px;
+}
+.header-r { display: flex; gap: 8px; align-items: flex-end; }
+.header-r .date {
+  font-size: 10px;
+  color: var(--muted);
+  font-family: "JetBrains Mono", monospace;
+  text-align: right;
+}
+.icon-btn {
+  padding: 6px 10px;
+  border: 1px solid var(--shadow);
+  font-size: 11px;
+  color: var(--ink);
+  background: var(--paper);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Section */
+.sec-label {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.sec-label h2 {
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--ink);
+  font-weight: 700;
+}
+.sec-label .sub {
+  font-size: 10px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* Hero card (dark) */
+.hero {
+  background: var(--ink);
+  color: var(--cream);
+  padding: 24px;
+  margin-bottom: 12px;
+}
+.hero .lab {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--gold);
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+.hero .big {
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 36px;
+  font-weight: 500;
+  letter-spacing: -1px;
+  line-height: 1;
+  margin-bottom: 12px;
+}
+.hero .row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(251, 246, 236, 0.15);
+}
+.hero .row .l {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: rgba(251, 246, 236, 0.6);
+  margin-bottom: 4px;
+}
+.hero .row .v {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Cards */
+.card {
+  background: var(--paper);
+  border: 1px solid var(--shadow);
+  padding: 16px;
+  margin-bottom: 10px;
+}
+.card.tinted-forest { border-top: 3px solid var(--forest); }
+.card.tinted-gold { border-top: 3px solid var(--gold); }
+.card.tinted-rust { border-top: 3px solid var(--rust); }
+
+.stats-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.stats-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 14px; }
+
+.stat-card {
+  background: var(--paper);
+  border: 1px solid var(--shadow);
+  padding: 14px;
+}
+.stat-card.tf { border-top: 3px solid var(--forest); }
+.stat-card.tg { border-top: 3px solid var(--gold); }
+.stat-card.tr { border-top: 3px solid var(--rust); }
+.stat-card .l {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.stat-card .v {
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.3px;
+}
+.stat-card .s {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 2px;
+  font-family: "JetBrains Mono", monospace;
+}
+.stats-3 .stat-card { padding: 12px; }
+.stats-3 .stat-card .v {
+  font-size: 13px;
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 700;
+}
+
+/* Item card */
+.item {
+  background: var(--paper);
+  border: 1px solid var(--shadow);
+  padding: 14px 16px;
+  margin-bottom: 6px;
+}
+.item.left-rust { border-left: 4px solid var(--rust); }
+.item.left-gold { border-left: 4px solid var(--gold); }
+.item.left-forest { border-left: 4px solid var(--forest); }
+.item.left-muted { border-left: 4px solid var(--shadow); }
+
+.item-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.item-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+.item-sub {
+  font-size: 11px;
+  color: var(--muted);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.item-amt {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.item-amt.green { color: var(--forest); }
+.item-amt.red { color: var(--rust); }
+.item-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  font-size: 11px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dotted var(--shadow);
+}
+.item-meta .mk {
+  color: var(--muted);
+  margin-bottom: 2px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+.item-meta .mv {
+  color: var(--ink);
+  font-weight: 600;
+}
+.item-meta .mv.mono {
+  font-family: "JetBrains Mono", monospace;
+}
+.item-meta.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+.item-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+}
+.btn-ghost {
+  flex: 1;
+  padding: 8px;
+  background: transparent;
+  border: 1px solid var(--shadow);
+  font-size: 11px;
+  color: var(--ink);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.btn-ghost.danger { color: var(--rust); }
+.btn-ghost.primary { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+
+/* Buttons */
+.btn-primary {
+  width: 100%;
+  padding: 14px;
+  background: var(--ink);
+  color: var(--cream);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.btn-secondary {
+  width: 100%;
+  padding: 12px;
+  background: var(--paper);
+  border: 1px solid var(--shadow);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.btn-secondary.success { background: var(--forest); color: var(--cream); border-color: var(--forest); }
+
+/* Tags / pills */
+.pill {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+.pill-forest { background: var(--forestBg); color: var(--forest); }
+.pill-gold { background: var(--goldBg); color: var(--gold); }
+.pill-rust { background: var(--rustBg); color: var(--rust); }
+.pill-muted { background: var(--shadow); color: var(--ink); }
+
+/* Toggle (segmented) */
+.toggle-bar {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+.toggle-btn {
+  flex: 1;
+  padding: 10px;
+  background: var(--paper);
+  border: 1px solid var(--shadow);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.toggle-btn.on {
+  background: var(--ink);
+  color: var(--cream);
+  border-color: var(--ink);
+}
+
+/* Filter chips */
+.chips {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.chips::-webkit-scrollbar { display: none; }
+.chip {
+  padding: 6px 12px;
+  background: var(--paper);
+  border: 1px solid var(--shadow);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.chip.on { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+
+/* Empty state */
+.empty {
+  padding: 24px;
+  background: var(--paper);
+  border: 1px dashed var(--shadow);
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+  font-style: italic;
+  line-height: 1.6;
+}
+
+/* Form fields */
+.field {
+  margin-bottom: 14px;
+}
+.field label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-bottom: 6px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.field input, .field select, .field textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--shadow);
+  background: var(--paper);
+  font-size: 14px;
+  color: var(--ink);
+}
+.field input.mono { font-family: "JetBrains Mono", monospace; }
+.field textarea { min-height: 60px; resize: vertical; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.help-text {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* Type buttons (income/expense) */
+.type-buttons { display: flex; gap: 6px; }
+.type-buttons button {
+  flex: 1;
+  padding: 12px;
+  background: var(--cream);
+  border: 1px solid var(--shadow);
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 13px;
+}
+.type-buttons button.on-out { background: var(--rust); color: var(--cream); border-color: var(--rust); }
+.type-buttons button.on-in { background: var(--forest); color: var(--cream); border-color: var(--forest); }
+
+/* Modal */
+.modal {
+  position: fixed; inset: 0;
+  background: rgba(28, 31, 42, 0.7);
+  z-index: 100;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+}
+.modal.on { display: flex; }
+.modal-sheet {
+  background: var(--cream);
+  width: 100%;
+  max-width: 600px;
+  max-height: 92vh;
+  overflow-y: auto;
+  padding: 28px 24px calc(24px + var(--sb));
+  border-top: 2px solid var(--ink);
+  animation: slideUp .25s ease-out;
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.modal-head {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 18px;
+}
+.modal-title-tiny {
+  font-size: 10px; letter-spacing: 2px; color: var(--rust);
+  font-weight: 700; margin-bottom: 4px;
+}
+.modal-title {
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 24px; font-weight: 500;
+  color: var(--ink);
+}
+.modal-close {
+  font-size: 22px; color: var(--muted);
+  width: 32px; height: 32px;
+}
+.modal-actions {
+  display: flex; gap: 8px; margin-top: 20px;
+}
+.modal-actions button {
+  padding: 14px;
+  font-size: 12px; font-weight: 700; letter-spacing: 1px;
+}
+.modal-actions .btn-cancel {
+  flex: 1; background: var(--cream);
+  border: 1px solid var(--ink); color: var(--ink);
+}
+.modal-actions .btn-save {
+  flex: 2; background: var(--ink); color: var(--cream);
+}
+
+/* Bottom nav */
+.bottomnav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--cream);
+  border-top: 1px solid var(--ink);
+  z-index: 50;
+  padding-bottom: var(--sb);
+}
+.bottomnav-inner {
+  max-width: 700px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+}
+.nav-btn {
+  padding: 12px 4px 14px;
+  font-size: 9.5px;
+  letter-spacing: 1px;
+  color: var(--muted);
+  font-weight: 500;
+  border-top: 2px solid transparent;
+  margin-top: -1px;
+  text-transform: uppercase;
+}
+.nav-btn.on {
+  color: var(--ink);
+  font-weight: 700;
+  border-top: 2px solid var(--rust);
+}
+
+/* Sliders */
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--forest);
+  cursor: pointer;
+}
+
+/* Progress bar */
+.progress {
+  height: 8px;
+  background: var(--shadow);
+  margin-top: 10px;
+  margin-bottom: 6px;
+}
+.progress > div {
+  height: 100%;
+  transition: width 0.4s;
+}
+
+/* Quote */
+.quote {
+  padding: 20px 0;
+  border-top: 1px solid var(--shadow);
+  border-bottom: 1px solid var(--shadow);
+  margin-bottom: 20px;
+}
+.quote .lab {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+.quote p {
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 18px;
+  font-style: italic;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+.quote .author {
+  font-size: 11px;
+  color: var(--rust);
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
+/* Reminders */
+.reminder {
+  background: var(--rustBg);
+  border: 1px solid var(--rust);
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+.reminder-soft {
+  background: var(--goldBg);
+  border-color: var(--gold);
+}
+.reminder-l .t { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+.reminder-l .d { font-size: 11px; color: var(--ink); }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: calc(96px + var(--sb));
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--ink);
+  color: var(--cream);
+  padding: 12px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 200;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.toast.on {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Quick action buttons */
+.quick-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.quick-btn {
+  padding: 14px 12px;
+  background: var(--cream);
+  border: 1px solid var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--ink);
+  text-align: left;
+}
+
+/* Allocation breakdown */
+.alloc-row {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px dotted var(--shadow);
+}
+.alloc-row:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+.alloc-row .top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.alloc-row .name { font-size: 12px; color: var(--ink); }
+.alloc-row .val {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.alloc-row .bar {
+  height: 4px;
+  background: var(--shadow);
+}
+
+/* Owner colors */
+.owner-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Sub list (for goal deposits, debt payments, etc) */
+.sublist {
+  background: var(--cream);
+  border: 1px solid var(--shadow);
+  margin-top: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+.sublist-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px dotted var(--shadow);
+  align-items: center;
+  gap: 8px;
+}
+.sublist-row:last-child { border-bottom: none; }
+.sublist-row .date { color: var(--muted); font-size: 11px; }
+.sublist-row .amt { font-family: "JetBrains Mono", monospace; font-weight: 700; color: var(--ink); }
+.sublist-row button { font-size: 14px; color: var(--muted); padding: 0 4px; }
+
+/* Welcome */
+.welcome-box {
+  background: var(--cream);
+  padding: 40px 28px;
+  max-width: 440px;
+  width: 100%;
+  border: 1px solid var(--shadow);
+  margin: auto;
+}
+
+/* Heatmap */
+.heatmap {
+  background: var(--paper);
+  border: 1px solid var(--shadow);
+  padding: 14px;
+  display: grid;
+  grid-template-columns: repeat(15, 1fr);
+  gap: 4px;
+}
+.heatmap > div {
+  aspect-ratio: 1;
+}
+
+/* Settings rows */
+.set-section { margin-bottom: 24px; }
+.set-row {
+  background: var(--paper);
+  border: 1px solid var(--shadow);
+  padding: 14px 16px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.set-row .grow { flex: 1; }
+.set-row .l { font-size: 13px; font-weight: 600; color: var(--ink); }
+.set-row .d { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+/* Cloud status indicator */
+.cloud-status {
+  position: fixed;
+  top: 12px;
+  right: 16px;
+  font-size: 10px;
+  color: var(--muted);
+  background: var(--cream);
+  padding: 4px 10px;
+  border: 1px solid var(--shadow);
+  z-index: 30;
+  font-family: "JetBrains Mono", monospace;
+  display: none;
+}
+.cloud-status.on { display: block; }
+
+</style>
+</head>
+<body>
+
+<!-- Cloud status -->
+<div id="cloud-status" class="cloud-status">☁ —</div>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<!-- ═════════ HOME ═════════ -->
+<section id="v-home" class="view on">
+  <div class="header">
+    <div class="header-l">
+      <div class="label-tiny">CATATAN KEUANGAN</div>
+      <h1 id="hello-name">Anda.</h1>
+    </div>
+    <div class="header-r">
+      <div class="date" id="today-date"></div>
+      <button class="icon-btn" onclick="go('settings')">⚙</button>
+    </div>
+  </div>
+
+  <!-- Reminders -->
+  <div id="reminders-block"></div>
+
+  <!-- Net Worth Hero -->
+  <div class="sec-label"><h2>RINGKASAN</h2></div>
+  <div class="hero">
+    <div class="lab">YANG ANDA PUNYA SEKARANG</div>
+    <div class="big" id="netWorth">Rp 0</div>
+    <div class="row">
+      <div>
+        <div class="l">PUNYA (ASET)</div>
+        <div class="v" id="totalAssets">Rp 0</div>
+      </div>
+      <div>
+        <div class="l">HUTANG</div>
+        <div class="v" id="totalDebt" style="color:#FFA995">Rp 0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Per-owner breakdown -->
+  <div id="owner-block"></div>
+
+  <!-- Income vs Expense (this month) -->
+  <div class="stats-3" id="month-stats" style="margin-top:16px"></div>
+
+  <!-- Tabungan Darurat -->
+  <div class="sec-label"><h2>TABUNGAN DARURAT</h2><span class="sub">untuk situasi tak terduga</span></div>
+  <div class="card" id="emergency-card"></div>
+
+  <!-- Allocation -->
+  <div id="alloc-block" style="margin-top:20px"></div>
+
+  <!-- Quick actions -->
+  <div class="sec-label"><h2>TINDAKAN CEPAT</h2></div>
+  <div class="quick-grid">
+    <button class="quick-btn" onclick="openTxForm()">+ Catat Uang Masuk/Keluar</button>
+    <button class="quick-btn" onclick="openAssetForm()">+ Tambah Aset</button>
+    <button class="quick-btn" onclick="openBillForm()">+ Tambah Tagihan</button>
+    <button class="quick-btn" onclick="openGoalForm()">+ Tambah Tujuan</button>
+  </div>
+
+  <!-- Daily quote -->
+  <div class="quote" id="daily-quote"></div>
+</section>
+
+<!-- ═════════ ASET (Aset + Hutang + Pajak) ═════════ -->
+<section id="v-aset" class="view">
+  <div class="header">
+    <div class="header-l">
+      <div class="label-tiny">YANG ANDA PUNYA</div>
+      <h1>Aset</h1>
+    </div>
+    <div class="header-r">
+      <div class="date" id="today-date2"></div>
+    </div>
+  </div>
+
+  <div class="toggle-bar">
+    <button class="toggle-btn on" id="aset-tab-asset" onclick="setAsetTab('asset')">PUNYA</button>
+    <button class="toggle-btn" id="aset-tab-debt" onclick="setAsetTab('debt')">HUTANG</button>
+    <button class="toggle-btn" id="aset-tab-tax" onclick="setAsetTab('tax')">PAJAK</button>
+  </div>
+
+  <!-- Asset Panel -->
+  <div id="aset-panel-asset">
+    <div class="card tinted-forest">
+      <div style="font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:6px;font-weight:700">TOTAL YANG ANDA PUNYA</div>
+      <div style="font-family:'Newsreader',serif;font-size:30px;font-weight:500;color:var(--ink);letter-spacing:-0.5px" id="aset-total">Rp 0</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:6px" id="aset-count">0 aset</div>
+    </div>
+    <div class="chips" id="aset-owner-chips"></div>
+    <div id="aset-list"></div>
+    <button class="btn-primary" onclick="openAssetForm()">+ TAMBAH ASET</button>
+  </div>
+
+  <!-- Debt Panel -->
+  <div id="aset-panel-debt" style="display:none">
+    <div class="card tinted-rust">
+      <div style="font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:6px;font-weight:700">TOTAL HUTANG</div>
+      <div style="font-family:'Newsreader',serif;font-size:30px;font-weight:500;color:var(--rust);letter-spacing:-0.5px" id="debt-total">Rp 0</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:6px" id="debt-monthly">Cicilan bulanan: Rp 0</div>
+    </div>
+    <div class="chips" id="debt-owner-chips"></div>
+    <div id="debt-list"></div>
+    <button class="btn-primary" onclick="openDebtForm()">+ TAMBAH HUTANG</button>
+  </div>
+
+  <!-- Tax Panel -->
+  <div id="aset-panel-tax" style="display:none">
+    <div style="background:var(--paper);border:1px solid var(--shadow);padding:14px;margin-bottom:14px;font-size:12px;color:var(--muted);line-height:1.6;font-style:italic">
+      Track pajak yang harus Anda bayar tiap tahun: PBB rumah, STNK kendaraan, SPT tahunan, dll. Reminder akan muncul di home saat dekat tanggal jatuh tempo.
+    </div>
+    <div id="tax-list"></div>
+    <button class="btn-primary" onclick="openTaxForm()">+ TAMBAH PAJAK</button>
+  </div>
+</section>
+
+<!-- ═════════ KAS (Transaksi + Tagihan) ═════════ -->
+<section id="v-kas" class="view">
+  <div class="header">
+    <div class="header-l">
+      <div class="label-tiny">UANG MASUK & KELUAR</div>
+      <h1>Kas</h1>
+    </div>
+    <div class="header-r">
+      <div class="date" id="today-date3"></div>
+    </div>
+  </div>
+
+  <div class="toggle-bar">
+    <button class="toggle-btn on" id="kas-tab-tx" onclick="setKasTab('tx')">TRANSAKSI</button>
+    <button class="toggle-btn" id="kas-tab-bill" onclick="setKasTab('bill')">TAGIHAN</button>
+  </div>
+
+  <!-- Transaksi -->
+  <div id="kas-panel-tx">
+    <div class="stats-3">
+      <div class="stat-card tf">
+        <div class="l">MASUK BULAN INI</div>
+        <div class="v" id="month-in" style="color:var(--forest)">Rp 0</div>
+      </div>
+      <div class="stat-card tr">
+        <div class="l">KELUAR BULAN INI</div>
+        <div class="v" id="month-out" style="color:var(--rust)">Rp 0</div>
+      </div>
+      <div class="stat-card tg">
+        <div class="l">SISA</div>
+        <div class="v" id="month-net">Rp 0</div>
+      </div>
+    </div>
+    <div id="cat-block"></div>
+    <button class="btn-primary" onclick="openTxForm()" style="margin-bottom:20px">+ CATAT UANG MASUK / KELUAR</button>
+    <div class="sec-label"><h2>RIWAYAT</h2><span class="sub">tap untuk edit</span></div>
+    <div class="chips">
+      <button class="chip on" data-tx-filter="all" onclick="setTxFilter('all')">Semua</button>
+      <button class="chip" data-tx-filter="in" onclick="setTxFilter('in')">Masuk</button>
+      <button class="chip" data-tx-filter="out" onclick="setTxFilter('out')">Keluar</button>
+    </div>
+    <div id="tx-list"></div>
+  </div>
+
+  <!-- Tagihan -->
+  <div id="kas-panel-bill" style="display:none">
+    <div class="stats-3">
+      <div class="stat-card">
+        <div class="l">TOTAL/BLN</div>
+        <div class="v" id="bill-total">Rp 0</div>
+      </div>
+      <div class="stat-card tr">
+        <div class="l">BELUM</div>
+        <div class="v" id="bill-unpaid">0</div>
+      </div>
+      <div class="stat-card tf">
+        <div class="l">SUDAH</div>
+        <div class="v" id="bill-paid">0</div>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="openBillForm()" style="margin-bottom:16px">+ TAMBAH TAGIHAN</button>
+    <div class="chips">
+      <button class="chip on" data-bill-filter="all" onclick="setBillFilter('all')">Semua</button>
+      <button class="chip" data-bill-filter="unpaid" onclick="setBillFilter('unpaid')">Belum bayar</button>
+      <button class="chip" data-bill-filter="upcoming" onclick="setBillFilter('upcoming')">7 hari</button>
+      <button class="chip" data-bill-filter="paid" onclick="setBillFilter('paid')">Sudah bayar</button>
+    </div>
+    <div id="bill-list"></div>
+  </div>
+</section>
+
+<!-- ═════════ TUJUAN ═════════ -->
+<section id="v-tujuan" class="view">
+  <div class="header">
+    <div class="header-l">
+      <div class="label-tiny">TABUNGAN UNTUK MASA DEPAN</div>
+      <h1>Tujuan</h1>
+    </div>
+    <div class="header-r">
+      <div class="date" id="today-date4"></div>
+    </div>
+  </div>
+
+  <div style="background:var(--paper);border:1px solid var(--shadow);padding:14px;margin-bottom:16px;font-size:12px;color:var(--muted);line-height:1.6;font-style:italic">
+    Setiap tujuan punya target Rupiah dan tanggal. Anda bisa setor kapan saja, atau set setoran rutin tiap bulan. Riwayat semua setoran tersimpan.
+  </div>
+
+  <div class="stats-2">
+    <div class="stat-card tg">
+      <div class="l">TARGET TOTAL</div>
+      <div class="v" id="goal-target">Rp 0</div>
+    </div>
+    <div class="stat-card tf">
+      <div class="l">TERKUMPUL</div>
+      <div class="v" id="goal-saved">Rp 0</div>
+    </div>
+  </div>
+
+  <button class="btn-primary" onclick="openGoalForm()" style="margin-bottom:16px">+ TAMBAH TUJUAN</button>
+  <div id="goal-list"></div>
+</section>
+
+<!-- ═════════ SETTINGS ═════════ -->
+<section id="v-settings" class="view">
+  <div class="header">
+    <div class="header-l">
+      <div class="label-tiny">PENGATURAN</div>
+      <h1>Settings</h1>
+    </div>
+    <div class="header-r">
+      <button class="icon-btn" onclick="go('home')">✕</button>
+    </div>
+  </div>
+
+  <!-- Profile -->
+  <div class="set-section">
+    <div class="sec-label"><h2>PROFIL</h2></div>
+    <div class="field">
+      <label>Nama</label>
+      <input type="text" id="set-name" placeholder="Nama Anda"/>
+    </div>
+    <div class="field">
+      <label>Pemasukan rutin per bulan (Rp)</label>
+      <input type="number" id="set-income" class="mono" inputmode="numeric"/>
+      <div class="help-text">Untuk hitung berapa % uang Anda yang ditabung</div>
+    </div>
+    <button class="btn-primary" onclick="saveProfile()" style="margin-top:8px">SIMPAN</button>
+  </div>
+
+  <!-- Tabungan Darurat -->
+  <div class="set-section">
+    <div class="sec-label"><h2>TABUNGAN DARURAT</h2></div>
+    <div class="field">
+      <label>Saldo saat ini (Rp)</label>
+      <input type="number" id="set-ef-current" class="mono" inputmode="numeric"/>
+    </div>
+    <div class="field">
+      <label>Target (berapa bulan pengeluaran)</label>
+      <input type="number" id="set-ef-months" class="mono" inputmode="numeric"/>
+      <div class="help-text">Saran: 6 bulan minimal. 12 bulan untuk yang punya tanggungan keluarga.</div>
+    </div>
+    <button class="btn-primary" onclick="saveEmergency()">SIMPAN</button>
+  </div>
+
+  <!-- Owners -->
+  <div class="set-section">
+    <div class="sec-label"><h2>PEMILIK</h2><span class="sub">untuk tracking aset/hutang</span></div>
+    <div id="owner-list-settings"></div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <input type="text" id="new-owner-name" placeholder="Nama pemilik baru..." style="flex:1;padding:12px 14px;border:1px solid var(--shadow);background:var(--paper);font-size:14px"/>
+      <button onclick="addOwner()" style="padding:10px 18px;background:var(--ink);color:var(--cream);font-size:12px;font-weight:600">+</button>
+    </div>
+  </div>
+
+  <!-- Cloud sync -->
+  <div class="set-section">
+    <div class="sec-label"><h2>SYNC CLOUD</h2><span class="sub">buka di HP & laptop</span></div>
+    <div id="cloud-block"></div>
+  </div>
+
+  <!-- Backup -->
+  <div class="set-section">
+    <div class="sec-label"><h2>BACKUP MANUAL</h2></div>
+    <button class="btn-secondary" onclick="exportData()" style="margin-bottom:6px">📤 EKSPOR DATA</button>
+    <button class="btn-secondary" onclick="importData()">📥 IMPOR DATA</button>
+    <div class="help-text">Salin semua data ke clipboard, simpan di Notes/WhatsApp untuk safety extra.</div>
+  </div>
+
+  <!-- Reset -->
+  <div class="set-section">
+    <div class="sec-label"><h2>RESET</h2></div>
+    <button class="btn-secondary" onclick="resetAllData()" style="color:var(--rust);border-color:var(--rust)">🗑 HAPUS SEMUA DATA</button>
+    <div class="help-text">Hapus semua data dan mulai dari awal. Tidak bisa di-undo.</div>
+  </div>
+
+</section>
+
+<!-- ═════════ MODALS ═════════ -->
+
+<!-- Welcome -->
+<div class="modal" id="m-welcome">
+  <div class="modal-sheet">
+    <div class="welcome-box">
+      <div class="modal-title-tiny">SELAMAT DATANG</div>
+      <h2 class="modal-title" style="margin-bottom:14px">Catatan keuangan keluarga.</h2>
+      <p style="font-size:14px;line-height:1.6;color:var(--muted);margin-bottom:18px">
+        Track aset, hutang, tagihan, transaksi, tujuan tabungan, dan pajak keluarga. Semua di satu tempat.
+      </p>
+      <p style="font-size:12px;line-height:1.6;color:var(--muted);margin-bottom:20px;font-style:italic">
+        Default 3 pemilik: Saya, Pasangan, Bersama. Bisa edit nanti.
+      </p>
+      <div class="field"><label>Nama Anda</label>
+        <input type="text" id="welcome-name" placeholder="Nama"/>
+      </div>
+      <button class="btn-primary" onclick="finishWelcome()">MULAI</button>
+    </div>
+  </div>
+</div>
+
+<!-- Transaction form -->
+<div class="modal" id="m-tx">
+  <div class="modal-sheet">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title-tiny">UANG MASUK/KELUAR</div>
+        <h3 class="modal-title" id="tx-title">Catat Transaksi</h3>
+      </div>
+      <button class="modal-close" onclick="closeModal('m-tx')">✕</button>
+    </div>
+    <input type="hidden" id="tx-id"/>
+    <div class="field">
+      <label>Jenis</label>
+      <div class="type-buttons">
+        <button id="tx-btn-out" onclick="setTxType('expense')">UANG KELUAR</button>
+        <button id="tx-btn-in" onclick="setTxType('income')">UANG MASUK</button>
+      </div>
+    </div>
+    <input type="hidden" id="tx-type" value="expense"/>
+    <div class="field">
+      <label>Jumlah (Rp)</label>
+      <input type="number" id="tx-amount" class="mono" inputmode="numeric" style="font-size:18px;font-weight:700"/>
+    </div>
+    <div class="field">
+      <label>Untuk apa?</label>
+      <input type="text" id="tx-note" placeholder="mis: makan siang, bensin, gaji"/>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Tanggal</label>
+        <input type="date" id="tx-date"/>
+      </div>
+      <div class="field">
+        <label>Pemilik</label>
+        <select id="tx-owner"></select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('m-tx')">BATAL</button>
+      <button class="btn-save" onclick="saveTx()">SIMPAN</button>
+    </div>
+  </div>
+</div>
+
+<!-- Asset form -->
+<div class="modal" id="m-asset">
+  <div class="modal-sheet">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title-tiny">YANG ANDA PUNYA</div>
+        <h3 class="modal-title" id="asset-title">Tambah Aset</h3>
+      </div>
+      <button class="modal-close" onclick="closeModal('m-asset')">✕</button>
+    </div>
+    <input type="hidden" id="asset-id"/>
+    <div class="field">
+      <label>Nama</label>
+      <input type="text" id="asset-name" placeholder="mis: Rumah, Honda Beat, Tabungan BRI"/>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Jenis</label>
+        <select id="asset-type">
+          <option value="property">🏠 Properti</option>
+          <option value="vehicle">🚗 Kendaraan</option>
+          <option value="cash">💵 Tunai/Tabungan</option>
+          <option value="investment">📈 Investasi</option>
+          <option value="business">🏢 Bisnis/Usaha</option>
+          <option value="other">📦 Lainnya</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Pemilik</label>
+        <select id="asset-owner"></select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Nilai sekarang (Rp)</label>
+      <input type="number" id="asset-value" class="mono" inputmode="numeric"/>
+      <div class="help-text">Berapa nilai aset ini sekarang kalau dijual</div>
+    </div>
+    <div class="field">
+      <label>Harga beli/awal (Rp, opsional)</label>
+      <input type="number" id="asset-buy" class="mono" inputmode="numeric"/>
+    </div>
+    <div class="field">
+      <label>Catatan (opsional)</label>
+      <textarea id="asset-notes" placeholder="mis: lokasi, nomor sertifikat, dll"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('m-asset')">BATAL</button>
+      <button class="btn-save" onclick="saveAsset()">SIMPAN</button>
+    </div>
+  </div>
+</div>
+
+<!-- Debt form -->
+<div class="modal" id="m-debt">
+  <div class="modal-sheet">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title-tiny">HUTANG</div>
+        <h3 class="modal-title" id="debt-title">Tambah Hutang</h3>
+      </div>
+      <button class="modal-close" onclick="closeModal('m-debt')">✕</button>
+    </div>
+    <input type="hidden" id="debt-id"/>
+    <div class="field">
+      <label>Nama hutang</label>
+      <input type="text" id="debt-name" placeholder="mis: KPR Bank Mandiri, Kartu kredit BCA"/>
+    </div>
+    <div class="field">
+      <label>Pemilik</label>
+      <select id="debt-owner"></select>
+    </div>
+    <div class="field">
+      <label>Saldo hutang saat ini (Rp)</label>
+      <input type="number" id="debt-balance" class="mono" inputmode="numeric"/>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Bunga/tahun (%)</label>
+        <input type="number" id="debt-interest" step="0.1" class="mono" inputmode="numeric"/>
+      </div>
+      <div class="field">
+        <label>Cicilan/bulan (Rp)</label>
+        <input type="number" id="debt-payment" class="mono" inputmode="numeric"/>
+      </div>
+    </div>
+    <div class="field">
+      <label>Tanggal jatuh tempo cicilan tiap bulan (1-31)</label>
+      <input type="number" id="debt-due-day" min="1" max="31" inputmode="numeric"/>
+      <div class="help-text">Tanggal Anda biasanya bayar cicilan tiap bulan</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('m-debt')">BATAL</button>
+      <button class="btn-save" onclick="saveDebt()">SIMPAN</button>
+    </div>
+  </div>
+</div>
+
+<!-- Debt payment form -->
+<div class="modal" id="m-debt-pay">
+  <div class="modal-sheet">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title-tiny">CATAT BAYAR CICILAN</div>
+        <h3 class="modal-title">Bayar Cicilan</h3>
+      </div>
+      <button class="modal-close" onclick="closeModal('m-debt-pay')">✕</button>
+    </div>
+    <input type="hidden" id="debt-pay-debtId"/>
+    <input type="hidden" id="debt-pay-id"/>
+    <div class="field">
+      <label>Jumlah dibayar (Rp)</label>
+      <input type="number" id="debt-pay-amount" class="mono" inputmode="numeric" style="font-size:18px;font-weight:700"/>
+    </div>
+    <div class="field">
+      <label>Tanggal bayar</label>
+      <input type="date" id="debt-pay-date"/>
+    </div>
+    <div class="field">
+      <label>Catatan (opsional)</label>
+      <input type="text" id="debt-pay-note" placeholder="mis: cicilan ke-12"/>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('m-debt-pay')">BATAL</button>
+      <button class="btn-save" onclick="saveDebtPayment()">SIMPAN</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bill form -->
+<div class="modal" id="m-bill">
+  <div class="modal-sheet">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title-tiny">TAGIHAN RUTIN</div>
+        <h3 class="modal-title" id="bill-title">Tambah Tagihan</h3>
+      </div>
+      <button class="modal-close" onclick="closeModal('m-bill')">✕</button>
+    </div>
+    <input type="hidden" id="bill-id"/>
+    <div class="field">
+      <label>Nama tagihan</label>
+      <input type="text" id="bill-name" placeholder="mis: Listrik PLN, Internet IndiHome"/>
+    </div>
+    <div class="field">
+      <label>Jumlah (Rp)</label>
+      <input type="number" id="bill-amount" class="mono" inputmode="numeric"/>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Frekuensi</label>
+        <select id="bill-freq">
+          <option value="monthly">Bulanan</option>
+          <option value="yearly">Tahunan</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Jatuh tempo</label>
+        <input type="date" id="bill-due"/>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('m-bill')">BATAL</button>
+      <button class="btn-save" onclick="saveBill()">SIMPAN</button>
+    </div>
+  </div>
+</div>
+
+<!-- Goal form -->
+<div class="modal" id="m-goal">
+  <div class="modal-sheet">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title-tiny">TUJUAN TABUNGAN</div>
+        <h3 class="modal-title" id="goal-title">Tambah Tujuan</h3>
+      </div>
+      <button class="modal-close" onclick="closeModal('m-goal')">✕</button>
+    </div>
+    <input type="hidden" id="goal-id"/>
+    <div class="field">
+      <label>Nama tujuan</label>
+      <input type="text" id="goal-name" placeholder="mis: DP rumah, Liburan, Sekolah anak"/>
+    </div>
+    <div class="field">
+      <label>Target dana (Rp)</label>
+      <input type="number" id="goal-target" class="mono" inputmode="numeric"/>
+    </div>
+    <div class="field">
+      <label>Target tanggal (opsional)</label>
+      <input type="date" id="goal-deadline"/>
+    </div>
+    <div class="field">
+      <label>Setoran rutin/bulan (Rp, opsional)</label>
+      <input type="number" id="goal-monthly" class="mono" inputmode="numeric"/>
+      <div class="help-text">Kalau diisi, bisa quick-add setoran rutin nanti dengan 1 tap</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('m-goal')">BATAL</button>
+      <button class="btn-save" onclick="saveGoal()">SIMPAN</button>
+    </div>
+  </div>
+</div>
+
+<!-- Goal deposit form -->
+<div class="modal" id="m-deposit">
+  <div class="modal-sheet">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title-tiny">SETOR DANA</div>
+        <h3 class="modal-title" id="deposit-title">Tambah Setoran</h3>
+      </div>
+      <button class="modal-close" onclick="closeModal('m-deposit')">✕</button>
+    </div>
+    <input type="hidden" id="deposit-goalId"/>
+    <input type="hidden" id="deposit-id"/>
+    <div class="field">
+      <label>Jumlah (Rp)</label>
+      <input type="number" id="deposit-amount" class="mono" inputmode="numeric" style="font-size:18px;font-weight:700"/>
+    </div>
+    <div class="field">
+      <label>Tanggal</label>
+      <input type="date" id="deposit-date"/>
+    </div>
+    <div class="field">
+      <label>Catatan (opsional)</label>
+      <input type="text" id="deposit-note" placeholder="mis: gaji bulan ini"/>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('m-deposit')">BATAL</button>
+      <button class="btn-save" onclick="saveDeposit()">SIMPAN</button>
+    </div>
+  </div>
+</div>
+
+<!-- Tax form -->
+<div class="modal" id="m-tax">
+  <div class="modal-sheet">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title-tiny">PAJAK</div>
+        <h3 class="modal-title" id="tax-title">Tambah Pajak</h3>
+      </div>
+      <button class="modal-close" onclick="closeModal('m-tax')">✕</button>
+    </div>
+    <input type="hidden" id="tax-id"/>
+    <div class="field">
+      <label>Nama pajak</label>
+      <input type="text" id="tax-name" placeholder="mis: PBB Rumah Langgur, STNK Avanza"/>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Jenis</label>
+        <select id="tax-type">
+          <option value="pbb">PBB (Properti)</option>
+          <option value="stnk">STNK (Kendaraan)</option>
+          <option value="spt">SPT Tahunan</option>
+          <option value="bpjs">BPJS</option>
+          <option value="other">Lainnya</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Frekuensi</label>
+        <select id="tax-freq">
+          <option value="yearly">Tahunan</option>
+          <option value="monthly">Bulanan</option>
+          <option value="once">Sekali</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Estimasi jumlah (Rp, opsional)</label>
+      <input type="number" id="tax-amount" class="mono" inputmode="numeric"/>
+    </div>
+    <div class="field">
+      <label>Tanggal jatuh tempo berikutnya</label>
+      <input type="date" id="tax-due"/>
+    </div>
+    <div class="field">
+      <label>Catatan (opsional)</label>
+      <textarea id="tax-notes" placeholder="mis: NJOP, link bayar, info lain"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('m-tax')">BATAL</button>
+      <button class="btn-save" onclick="saveTax()">SIMPAN</button>
+    </div>
+  </div>
+</div>
+
+<!-- Tax payment -->
+<div class="modal" id="m-tax-pay">
+  <div class="modal-sheet">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title-tiny">BAYAR PAJAK</div>
+        <h3 class="modal-title">Catat Bayar</h3>
+      </div>
+      <button class="modal-close" onclick="closeModal('m-tax-pay')">✕</button>
+    </div>
+    <input type="hidden" id="tax-pay-taxId"/>
+    <input type="hidden" id="tax-pay-id"/>
+    <div class="field">
+      <label>Jumlah dibayar (Rp)</label>
+      <input type="number" id="tax-pay-amount" class="mono" inputmode="numeric" style="font-size:18px;font-weight:700"/>
+    </div>
+    <div class="field">
+      <label>Tanggal bayar</label>
+      <input type="date" id="tax-pay-date"/>
+    </div>
+    <div class="field">
+      <label>Catatan (opsional)</label>
+      <input type="text" id="tax-pay-note" placeholder="mis: lewat SIGNAL"/>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('m-tax-pay')">BATAL</button>
+      <button class="btn-save" onclick="saveTaxPayment()">SIMPAN</button>
+    </div>
+  </div>
+</div>
+
+<!-- Cloud setup -->
+<div class="modal" id="m-cloud">
+  <div class="modal-sheet">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title-tiny">SYNC ANTAR DEVICE</div>
+        <h3 class="modal-title">Setup Cloud</h3>
+      </div>
+      <button class="modal-close" onclick="closeModal('m-cloud')">✕</button>
+    </div>
+    <div id="cloud-modal-content"></div>
+  </div>
+</div>
+
+<!-- ═════════ BOTTOM NAV ═════════ -->
+<nav class="bottomnav">
+  <div class="bottomnav-inner">
+    <button class="nav-btn on" data-v="home" onclick="go('home')">Ringkas</button>
+    <button class="nav-btn" data-v="aset" onclick="go('aset')">Aset</button>
+    <button class="nav-btn" data-v="kas" onclick="go('kas')">Kas</button>
+    <button class="nav-btn" data-v="tujuan" onclick="go('tujuan')">Tujuan</button>
+    <button class="nav-btn" data-v="settings" onclick="go('settings')">Settings</button>
+  </div>
+</nav>
+
+<script>
+'use strict';
+
+/* ═══════════════════════════
+   STORAGE
+═══════════════════════════ */
+const STORAGE_KEY = 'kk_v3';
+
+const DEFAULT_DATA = {
+  profile: { name: '', monthlyIncome: 0 },
+  owners: [
+    { id: 'self', name: 'Saya', color: '#0F4C2C' },
+    { id: 'spouse', name: 'Pasangan', color: '#A87838' },
+    { id: 'shared', name: 'Bersama', color: '#2D3656' }
+  ],
+  assets: [],
+  debts: [],
+  transactions: [],
+  bills: [],
+  goals: [],
+  taxes: [],
+  emergencyFund: { current: 0, targetMonths: 6 },
+  cloud: {}
+};
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return { ...DEFAULT_DATA, ...parsed };
+  } catch { return null; }
+}
+
+function saveData(d) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+    schedCloudPush();
+  } catch (e) { console.error('Save failed', e); }
+}
+
+let DATA = loadData() || JSON.parse(JSON.stringify(DEFAULT_DATA));
+
+function commit() {
+  saveData(DATA);
+  renderAll();
+}
+
+/* ═══════════════════════════
+   UTILITIES
+═══════════════════════════ */
+const uid = () => Math.random().toString(36).slice(2, 11);
+
+const fmtRp = (n) => {
+  if (n == null || isNaN(n)) return 'Rp 0';
+  return 'Rp ' + Math.round(n).toLocaleString('id-ID');
+};
+
+const fmtRpK = (n) => {
+  const v = Math.abs(n);
+  if (v >= 1e9) return 'Rp ' + (n / 1e9).toFixed(1) + 'M';
+  if (v >= 1e6) return 'Rp ' + (n / 1e6).toFixed(1) + 'jt';
+  if (v >= 1e3) return 'Rp ' + (n / 1e3).toFixed(0) + 'rb';
+  return 'Rp ' + Math.round(n).toLocaleString('id-ID');
+};
+
+const todayISO = () => new Date().toISOString().split('T')[0];
+
+const fmtDate = (iso) => {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+};
+
+const fmtDateLong = (iso) => {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+};
+
+const daysUntil = (iso) => {
+  if (!iso) return null;
+  const a = new Date(); a.setHours(0, 0, 0, 0);
+  const b = new Date(iso); b.setHours(0, 0, 0, 0);
+  return Math.round((b - a) / 864e5);
+};
+
+const esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+const ASSET_TYPES = {
+  property: { label: 'Properti', icon: '🏠', color: '#0F4C2C' },
+  vehicle: { label: 'Kendaraan', icon: '🚗', color: '#A87838' },
+  cash: { label: 'Tunai/Tabungan', icon: '💵', color: '#2D3656' },
+  investment: { label: 'Investasi', icon: '📈', color: '#7C3AED' },
+  business: { label: 'Bisnis/Usaha', icon: '🏢', color: '#1F6E47' },
+  other: { label: 'Lainnya', icon: '📦', color: '#7A7565' }
+};
+
+const TAX_TYPES = {
+  pbb: { label: 'PBB (Properti)', icon: '🏠' },
+  stnk: { label: 'STNK (Kendaraan)', icon: '🚗' },
+  spt: { label: 'SPT Tahunan', icon: '📋' },
+  bpjs: { label: 'BPJS', icon: '🏥' },
+  other: { label: 'Lainnya', icon: '📄' }
+};
+
+const CATS = {
+  'Makan & Lifestyle': ['makan', 'kopi', 'cafe', 'resto', 'jajan', 'nonton', 'baju', 'belanja', 'mall', 'snack'],
+  'Transportasi': ['bensin', 'parkir', 'tol', 'grab', 'gojek', 'taksi', 'ojek', 'pertamax', 'servis', 'oli'],
+  'Tagihan': ['listrik', 'air', 'internet', 'wifi', 'pulsa', 'pdam', 'pln', 'bpjs', 'asuransi', 'iuran'],
+  'Belanja Rumah': ['sayur', 'daging', 'beras', 'pasar', 'indomaret', 'alfamart', 'minyak', 'telur'],
+  'Kesehatan': ['dokter', 'obat', 'apotek', 'rumah sakit', 'klinik', 'vitamin'],
+  'Pendidikan': ['sekolah', 'spp', 'les', 'kursus', 'seragam', 'buku'],
+  'Pemasukan': ['gaji', 'salary', 'bonus', 'komisi', 'sewa', 'dividen']
+};
+
+function detectCat(note, type) {
+  if (type === 'income') return 'Pemasukan';
+  if (!note) return 'Lainnya';
+  const lo = note.toLowerCase();
+  for (const [c, ks] of Object.entries(CATS)) {
+    for (const k of ks) if (lo.includes(k)) return c;
+  }
+  return 'Lainnya';
+}
+
+function getOwner(id) {
+  return DATA.owners.find(o => o.id === id) || null;
+}
+
+function isPaidThisCycle(b) {
+  if (!b.lastPaid) return false;
+  const p = new Date(b.lastPaid);
+  const n = new Date();
+  return b.frequency === 'yearly'
+    ? p.getFullYear() === n.getFullYear()
+    : p.getFullYear() === n.getFullYear() && p.getMonth() === n.getMonth();
+}
+
+/* ═══════════════════════════
+   TOAST
+═══════════════════════════ */
+let _toastT;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('on');
+  clearTimeout(_toastT);
+  _toastT = setTimeout(() => t.classList.remove('on'), 2200);
+}
+
+/* ═══════════════════════════
+   MODAL
+═══════════════════════════ */
+function openModal(id) { document.getElementById(id).classList.add('on'); }
+function closeModal(id) { document.getElementById(id).classList.remove('on'); }
+
+/* ═══════════════════════════
+   NAV
+═══════════════════════════ */
+function go(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('on'));
+  document.getElementById('v-' + name).classList.add('on');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('on', b.dataset.v === name));
+  window.scrollTo(0, 0);
+  renderAll();
+}
+
+/* ═══════════════════════════
+   RENDER ALL
+═══════════════════════════ */
+function renderAll() {
+  document.getElementById('hello-name').textContent = (DATA.profile.name || 'Anda') + '.';
+  ['today-date', 'today-date2', 'today-date3', 'today-date4'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short' });
+  });
+  renderHome();
+  renderAset();
+  renderKas();
+  renderTujuan();
+  renderSettings();
+  renderCloudStatus();
+}
+
+/* ═══════════════════════════
+   HOME
+═══════════════════════════ */
+function renderHome() {
+  const totalAssets = DATA.assets.reduce((s, a) => s + (a.currentValue || 0), 0);
+  const totalDebt = DATA.debts.reduce((s, d) => s + (d.balance || 0), 0);
+  const netWorth = totalAssets - totalDebt;
+
+  document.getElementById('netWorth').textContent = fmtRp(netWorth);
+  document.getElementById('totalAssets').textContent = fmtRpK(totalAssets);
+  document.getElementById('totalDebt').textContent = fmtRpK(totalDebt);
+
+  // Reminders
+  const remBlock = document.getElementById('reminders-block');
+  const reminders = getReminders();
+  if (reminders.length > 0) {
+    remBlock.innerHTML = '<div class="sec-label"><h2>PERLU PERHATIAN</h2></div>' + reminders.map(r => `
+      <div class="reminder ${r.urgent ? '' : 'reminder-soft'}">
+        <div class="reminder-l">
+          <div class="t">${esc(r.title)}</div>
+          <div class="d">${esc(r.detail)}</div>
+        </div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:${r.urgent ? 'var(--rust)' : 'var(--gold)'}">${r.tag}</div>
+      </div>
+    `).join('');
+  } else {
+    remBlock.innerHTML = '';
+  }
+
+  // Per-owner
+  const ownerBlock = document.getElementById('owner-block');
+  const byOwner = DATA.owners.map(o => {
+    const aSum = DATA.assets.filter(a => a.ownerId === o.id).reduce((s, a) => s + (a.currentValue || 0), 0);
+    const dSum = DATA.debts.filter(d => d.ownerId === o.id).reduce((s, d) => s + (d.balance || 0), 0);
+    return { ...o, assets: aSum, debt: dSum, net: aSum - dSum };
+  }).filter(o => o.assets > 0 || o.debt > 0);
+
+  if (byOwner.length > 0) {
+    ownerBlock.innerHTML = '<div class="sec-label" style="margin-top:18px"><h2>PER PEMILIK</h2></div>' + byOwner.map(o => `
+      <div class="item" style="border-left:4px solid ${o.color}">
+        <div class="item-top">
+          <div>
+            <div class="item-name">${esc(o.name)}</div>
+            <div class="item-sub">aset ${fmtRpK(o.assets)} · hutang ${fmtRpK(o.debt)}</div>
+          </div>
+          <div class="item-amt ${o.net >= 0 ? '' : 'red'}">${fmtRpK(o.net)}</div>
+        </div>
+      </div>
+    `).join('');
+  } else {
+    ownerBlock.innerHTML = '';
+  }
+
+  // Month stats
+  const now = new Date();
+  const thisMonthTx = DATA.transactions.filter(t => {
+    const d = new Date(t.date);
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  });
+  const inSum = thisMonthTx.filter(t => t.type === 'income').reduce((s, t) => s + (t.amount || 0), 0);
+  const outSum = thisMonthTx.filter(t => t.type === 'expense').reduce((s, t) => s + (t.amount || 0), 0);
+  const netMonth = inSum - outSum;
+
+  const monthIncome = DATA.profile.monthlyIncome || inSum;
+  const savingPct = monthIncome > 0 ? (netMonth / monthIncome * 100) : 0;
+
+  document.getElementById('month-stats').innerHTML = `
+    <div class="stat-card tf">
+      <div class="l">MASUK BULAN INI</div>
+      <div class="v" style="color:var(--forest)">${fmtRpK(inSum)}</div>
+    </div>
+    <div class="stat-card tr">
+      <div class="l">KELUAR BULAN INI</div>
+      <div class="v" style="color:var(--rust)">${fmtRpK(outSum)}</div>
+    </div>
+    <div class="stat-card ${netMonth >= 0 ? 'tg' : 'tr'}">
+      <div class="l">SISA</div>
+      <div class="v">${fmtRpK(netMonth)}</div>
+    </div>
+  `;
+
+  // Emergency fund
+  const monthlyBills = DATA.bills.filter(b => b.frequency === 'monthly').reduce((s, b) => s + (b.amount || 0), 0)
+    + (DATA.bills.filter(b => b.frequency === 'yearly').reduce((s, b) => s + (b.amount || 0), 0) / 12);
+  const efTarget = monthlyBills * (DATA.emergencyFund?.targetMonths || 6);
+  const efCurrent = DATA.emergencyFund?.current || 0;
+  const efPct = efTarget > 0 ? Math.min(100, (efCurrent / efTarget * 100)) : 0;
+
+  document.getElementById('emergency-card').innerHTML = `
+    <div style="display:flex;justify-content:space-between;padding:6px 0">
+      <span style="font-size:12px;color:var(--muted)">Saat ini</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--ink);font-weight:600">${fmtRp(efCurrent)}</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;padding:6px 0">
+      <span style="font-size:12px;color:var(--muted)">Target</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--ink);font-weight:600">${fmtRp(efTarget)} <span style="color:var(--muted);font-weight:400">(${DATA.emergencyFund?.targetMonths || 6} bulan)</span></span>
+    </div>
+    <div class="progress">
+      <div style="width:${efPct}%;background:${efPct >= 100 ? 'var(--forest)' : 'var(--gold)'}"></div>
+    </div>
+    <div style="font-size:10px;color:var(--muted);margin-top:8px;font-style:italic;line-height:1.5">
+      Tabungan untuk situasi darurat — sakit, kehilangan kerja, biaya tidak terduga.
+    </div>
+  `;
+
+  // Allocation
+  const allocBlock = document.getElementById('alloc-block');
+  if (totalAssets > 0) {
+    const byType = {};
+    DATA.assets.forEach(a => {
+      byType[a.type] = (byType[a.type] || 0) + (a.currentValue || 0);
+    });
+    const sorted = Object.entries(byType).sort((a, b) => b[1] - a[1]);
+    allocBlock.innerHTML = `
+      <div class="sec-label" style="margin-top:20px"><h2>ALOKASI ASET</h2><span class="sub">distribusi yang Anda punya</span></div>
+      <div class="card">
+        ${sorted.map(([type, val]) => {
+          const pct = (val / totalAssets * 100);
+          const t = ASSET_TYPES[type] || ASSET_TYPES.other;
+          return `
+            <div class="alloc-row">
+              <div class="top">
+                <span class="name">${t.icon} ${t.label}</span>
+                <span class="val">${pct.toFixed(0)}% · ${fmtRpK(val)}</span>
+              </div>
+              <div class="bar"><div style="height:100%;width:${pct}%;background:${t.color}"></div></div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  } else {
+    allocBlock.innerHTML = '';
+  }
+
+  // Daily quote
+  const quotes = [
+    { t: 'Yang sulit bukan menghasilkan uang. Yang sulit adalah tahu kapan cukup.', a: 'Housel' },
+    { t: 'Tabungan = uang yang membuat Anda bebas memilih.', a: 'Collins' },
+    { t: 'Kekayaan = pemasukan dikurangi ego.', a: 'Housel' },
+    { t: 'Yang Anda kontrol adalah seberapa banyak Anda menabung.', a: 'Housel' },
+    { t: 'Fokus ke 5-10 keputusan besar, bukan optimasi receh.', a: 'Sethi' },
+    { t: 'Waktu di pasar mengalahkan waktu masuk pasar.', a: 'Collins' },
+    { t: 'Volatilitas adalah harga admisi pasar saham.', a: 'Housel' },
+    { t: 'Pemenang reksa dana hari ini, kemungkinan kalah besok.', a: 'Malkiel' },
+    { t: 'Otomatisasi mengalahkan kemauan setiap saat.', a: 'Sethi' }
+  ];
+  const q = quotes[new Date().getDate() % quotes.length];
+  document.getElementById('daily-quote').innerHTML = `
+    <div class="lab">UNTUK HARI INI</div>
+    <p>"${q.t}"</p>
+    <div class="author">— ${q.a.toUpperCase()}</div>
+  `;
+}
+
+function getReminders() {
+  const reminders = [];
+
+  // Bills due soon
+  DATA.bills.filter(b => !isPaidThisCycle(b)).forEach(b => {
+    const days = daysUntil(b.dueDate);
+    if (days !== null && days <= 7) {
+      reminders.push({
+        urgent: days < 0 || days <= 2,
+        title: b.name + ' (tagihan)',
+        detail: days < 0 ? `Telat ${Math.abs(days)} hari · ${fmtRpK(b.amount)}` : days === 0 ? `Hari ini · ${fmtRpK(b.amount)}` : `${days} hari lagi · ${fmtRpK(b.amount)}`,
+        tag: days < 0 ? 'TELAT' : days === 0 ? 'HARI INI' : 'SEGERA'
+      });
+    }
+  });
+
+  // Tax due soon
+  DATA.taxes.forEach(t => {
+    const days = daysUntil(t.dueDate);
+    if (days !== null && days <= 30) {
+      reminders.push({
+        urgent: days < 0 || days <= 7,
+        title: t.name + ' (pajak)',
+        detail: days < 0 ? `Telat ${Math.abs(days)} hari` : days === 0 ? `Hari ini` : `${days} hari lagi · ${TAX_TYPES[t.type]?.label || ''}`,
+        tag: days < 0 ? 'TELAT' : days <= 7 ? 'SEGERA' : 'BULAN INI'
+      });
+    }
+  });
+
+  // Debt due day
+  DATA.debts.forEach(d => {
+    if (!d.dueDay) return;
+    const today = new Date();
+    const daysToMonth = d.dueDay - today.getDate();
+    if (daysToMonth >= 0 && daysToMonth <= 5) {
+      // Check if already paid this month
+      const thisMonthPayment = (d.payments || []).find(p => {
+        const pd = new Date(p.date);
+        return pd.getMonth() === today.getMonth() && pd.getFullYear() === today.getFullYear();
+      });
+      if (!thisMonthPayment) {
+        reminders.push({
+          urgent: daysToMonth <= 2,
+          title: d.name + ' (cicilan)',
+          detail: daysToMonth === 0 ? `Cicilan hari ini · ${fmtRpK(d.monthlyPayment || 0)}` : `${daysToMonth} hari lagi · ${fmtRpK(d.monthlyPayment || 0)}`,
+          tag: daysToMonth === 0 ? 'HARI INI' : 'SEGERA'
+        });
+      }
+    }
+  });
+
+  return reminders.slice(0, 5);
+}
+
+/* ═══════════════════════════
+   ASET TAB
+═══════════════════════════ */
+let _asetTab = 'asset';
+let _asetOwnerFilter = 'all';
+
+function setAsetTab(tab) {
+  _asetTab = tab;
+  ['asset', 'debt', 'tax'].forEach(t => {
+    document.getElementById('aset-tab-' + t).classList.toggle('on', t === tab);
+    document.getElementById('aset-panel-' + t).style.display = t === tab ? 'block' : 'none';
+  });
+  renderAset();
+}
+
+function renderAset() {
+  if (_asetTab === 'asset') renderAssetList();
+  else if (_asetTab === 'debt') renderDebtList();
+  else renderTaxList();
+}
+
+function renderAssetList() {
+  const total = DATA.assets.reduce((s, a) => s + (a.currentValue || 0), 0);
+  document.getElementById('aset-total').textContent = fmtRp(total);
+  document.getElementById('aset-count').textContent = `${DATA.assets.length} aset`;
+
+  // Owner chips
+  const chipsEl = document.getElementById('aset-owner-chips');
+  chipsEl.innerHTML = `<button class="chip ${_asetOwnerFilter === 'all' ? 'on' : ''}" onclick="setAsetOwnerFilter('all')">Semua</button>` +
+    DATA.owners.map(o => `<button class="chip ${_asetOwnerFilter === o.id ? 'on' : ''}" onclick="setAsetOwnerFilter('${o.id}')">${esc(o.name)}</button>`).join('');
+
+  let list = _asetOwnerFilter === 'all' ? DATA.assets : DATA.assets.filter(a => a.ownerId === _asetOwnerFilter);
+  list = [...list].sort((a, b) => (b.currentValue || 0) - (a.currentValue || 0));
+
+  const el = document.getElementById('aset-list');
+  if (list.length === 0) {
+    el.innerHTML = `<div class="empty">Belum ada aset. Tambah properti, kendaraan, tabungan, investasi yang Anda punya.</div>`;
+    return;
+  }
+  el.innerHTML = list.map(a => {
+    const t = ASSET_TYPES[a.type] || ASSET_TYPES.other;
+    const owner = getOwner(a.ownerId);
+    const change = a.buyPrice ? ((a.currentValue - a.buyPrice) / a.buyPrice * 100) : null;
+    return `
+      <div class="item">
+        <div class="item-top">
+          <div style="flex:1">
+            <div class="item-name">${t.icon} ${esc(a.name)}</div>
+            <div class="item-sub">
+              <span>${t.label}</span>
+              ${owner ? `<span class="pill" style="background:${owner.color}33;color:${owner.color}">${esc(owner.name)}</span>` : ''}
+            </div>
+          </div>
+          <div class="item-amt">${fmtRpK(a.currentValue)}</div>
+        </div>
+        ${a.buyPrice || a.notes ? `<div class="item-meta">${
+          a.buyPrice ? `<div><div class="mk">HARGA BELI</div><div class="mv mono">${fmtRpK(a.buyPrice)}</div></div>` : ''
+        }${
+          change !== null ? `<div><div class="mk">PERUBAHAN</div><div class="mv mono" style="color:${change >= 0 ? 'var(--forest)' : 'var(--rust)'}">${change >= 0 ? '+' : ''}${change.toFixed(1)}%</div></div>` : ''
+        }${
+          a.notes ? `<div style="grid-column:span 2"><div class="mk">CATATAN</div><div style="font-size:12px;color:var(--ink);margin-top:2px">${esc(a.notes)}</div></div>` : ''
+        }</div>` : ''}
+        <div class="item-actions">
+          <button class="btn-ghost" onclick="openAssetForm('${a.id}')">Edit</button>
+          <button class="btn-ghost danger" onclick="delAsset('${a.id}')">Hapus</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function setAsetOwnerFilter(f) { _asetOwnerFilter = f; renderAset(); }
+
+function openAssetForm(id) {
+  const a = id ? DATA.assets.find(x => x.id === id) : null;
+  document.getElementById('asset-title').textContent = a ? 'Edit Aset' : 'Tambah Aset';
+  document.getElementById('asset-id').value = a ? a.id : '';
+  document.getElementById('asset-name').value = a ? a.name : '';
+  document.getElementById('asset-type').value = a ? a.type : 'cash';
+  fillOwnerSelect('asset-owner', a ? a.ownerId : '');
+  document.getElementById('asset-value').value = a ? a.currentValue || '' : '';
+  document.getElementById('asset-buy').value = a ? a.buyPrice || '' : '';
+  document.getElementById('asset-notes').value = a ? a.notes || '' : '';
+  openModal('m-asset');
+}
+
+function saveAsset() {
+  const id = document.getElementById('asset-id').value;
+  const name = document.getElementById('asset-name').value.trim();
+  if (!name) { toast('Isi nama aset'); return; }
+  const item = {
+    id: id || uid(),
+    name,
+    type: document.getElementById('asset-type').value,
+    ownerId: document.getElementById('asset-owner').value,
+    currentValue: parseFloat(document.getElementById('asset-value').value) || 0,
+    buyPrice: parseFloat(document.getElementById('asset-buy').value) || 0,
+    notes: document.getElementById('asset-notes').value.trim()
+  };
+  if (id) {
+    const i = DATA.assets.findIndex(x => x.id === id);
+    if (i >= 0) DATA.assets[i] = item;
+  } else {
+    DATA.assets.push(item);
+  }
+  closeModal('m-asset');
+  commit();
+  toast('Aset tersimpan');
+}
+
+function delAsset(id) {
+  if (!confirm('Hapus aset ini?')) return;
+  DATA.assets = DATA.assets.filter(a => a.id !== id);
+  commit();
+  toast('Dihapus');
+}
+
+/* ═══════════════════════════
+   DEBT
+═══════════════════════════ */
+function renderDebtList() {
+  const total = DATA.debts.reduce((s, d) => s + (d.balance || 0), 0);
+  const monthly = DATA.debts.reduce((s, d) => s + (d.monthlyPayment || 0), 0);
+  document.getElementById('debt-total').textContent = fmtRp(total);
+  document.getElementById('debt-monthly').textContent = `Cicilan bulanan total: ${fmtRp(monthly)}`;
+
+  const chipsEl = document.getElementById('debt-owner-chips');
+  chipsEl.innerHTML = `<button class="chip ${_asetOwnerFilter === 'all' ? 'on' : ''}" onclick="setAsetOwnerFilter('all')">Semua</button>` +
+    DATA.owners.map(o => `<button class="chip ${_asetOwnerFilter === o.id ? 'on' : ''}" onclick="setAsetOwnerFilter('${o.id}')">${esc(o.name)}</button>`).join('');
+
+  let list = _asetOwnerFilter === 'all' ? DATA.debts : DATA.debts.filter(d => d.ownerId === _asetOwnerFilter);
+  list = [...list].sort((a, b) => (b.interestRate || 0) - (a.interestRate || 0));
+
+  const el = document.getElementById('debt-list');
+  if (list.length === 0) {
+    el.innerHTML = `<div class="empty">Belum ada hutang tercatat. Kalau punya KPR, cicilan bank, kartu kredit, catat di sini.</div>`;
+    return;
+  }
+
+  el.innerHTML = list.map((d, idx) => {
+    const owner = getOwner(d.ownerId);
+    const totalPaid = (d.payments || []).reduce((s, p) => s + (p.amount || 0), 0);
+    const paymentsCount = (d.payments || []).length;
+
+    // Estimated months remaining
+    let estimateText = '';
+    if (d.monthlyPayment > 0 && d.balance > 0) {
+      if (d.interestRate > 0) {
+        const r = d.interestRate / 100 / 12;
+        const months = Math.log(d.monthlyPayment / (d.monthlyPayment - d.balance * r)) / Math.log(1 + r);
+        if (isFinite(months) && months > 0) {
+          const yrs = Math.floor(months / 12);
+          const mos = Math.round(months % 12);
+          estimateText = `~${yrs > 0 ? yrs + ' thn ' : ''}${mos} bln lagi`;
+        } else {
+          estimateText = 'Cicilan terlalu kecil';
+        }
+      } else {
+        const months = Math.ceil(d.balance / d.monthlyPayment);
+        const yrs = Math.floor(months / 12);
+        const mos = months % 12;
+        estimateText = `~${yrs > 0 ? yrs + ' thn ' : ''}${mos} bln lagi`;
+      }
+    }
+
+    const paymentsHtml = (d.payments || []).length > 0 ? `
+      <div class="sublist">
+        <div style="font-size:10px;letter-spacing:1px;color:var(--muted);margin-bottom:6px;font-weight:700">RIWAYAT BAYAR (${paymentsCount}x · ${fmtRpK(totalPaid)})</div>
+        ${(d.payments || []).slice().reverse().slice(0, 5).map(p => `
+          <div class="sublist-row">
+            <div>
+              <div style="font-weight:600;color:var(--ink);font-size:12px">${esc(p.note || 'Cicilan')}</div>
+              <div class="date">${fmtDate(p.date)}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <span class="amt">${fmtRpK(p.amount)}</span>
+              <button onclick="delDebtPayment('${d.id}','${p.id}')" title="Hapus">×</button>
+            </div>
+          </div>
+        `).join('')}
+        ${(d.payments || []).length > 5 ? `<div style="text-align:center;padding:6px;font-size:11px;color:var(--muted)">+${(d.payments || []).length - 5} pembayaran sebelumnya</div>` : ''}
+      </div>
+    ` : '';
+
+    return `
+      <div class="item ${idx === 0 ? 'left-rust' : 'left-muted'}">
+        <div class="item-top">
+          <div style="flex:1">
+            <div style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:1px;margin-bottom:2px">
+              #${idx + 1} ${idx === 0 ? '· LUNASI INI DULU' : ''}
+            </div>
+            <div class="item-name">${esc(d.name)}</div>
+            ${owner ? `<span class="pill" style="background:${owner.color}33;color:${owner.color}">${esc(owner.name)}</span>` : ''}
+          </div>
+        </div>
+        <div class="item-meta cols-3">
+          <div><div class="mk">SISA HUTANG</div><div class="mv mono">${fmtRpK(d.balance)}</div></div>
+          <div><div class="mk">BUNGA/THN</div><div class="mv mono" style="color:var(--rust)">${(d.interestRate || 0).toFixed(1)}%</div></div>
+          <div><div class="mk">CICILAN/BLN</div><div class="mv mono">${fmtRpK(d.monthlyPayment || 0)}</div></div>
+        </div>
+        ${estimateText || d.dueDay ? `<div class="item-meta">
+          ${estimateText ? `<div><div class="mk">ESTIMASI LUNAS</div><div class="mv">${estimateText}</div></div>` : ''}
+          ${d.dueDay ? `<div><div class="mk">JATUH TEMPO</div><div class="mv">Tanggal ${d.dueDay}</div></div>` : ''}
+        </div>` : ''}
+        ${paymentsHtml}
+        <div class="item-actions" style="margin-top:10px">
+          <button class="btn-ghost primary" onclick="openDebtPayForm('${d.id}')">+ Bayar</button>
+          <button class="btn-ghost" onclick="openDebtForm('${d.id}')">Edit</button>
+          <button class="btn-ghost danger" onclick="delDebt('${d.id}')">Hapus</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openDebtForm(id) {
+  const d = id ? DATA.debts.find(x => x.id === id) : null;
+  document.getElementById('debt-title').textContent = d ? 'Edit Hutang' : 'Tambah Hutang';
+  document.getElementById('debt-id').value = d ? d.id : '';
+  document.getElementById('debt-name').value = d ? d.name : '';
+  fillOwnerSelect('debt-owner', d ? d.ownerId : '');
+  document.getElementById('debt-balance').value = d ? d.balance || '' : '';
+  document.getElementById('debt-interest').value = d ? d.interestRate || '' : '';
+  document.getElementById('debt-payment').value = d ? d.monthlyPayment || '' : '';
+  document.getElementById('debt-due-day').value = d ? d.dueDay || '' : '';
+  openModal('m-debt');
+}
+
+function saveDebt() {
+  const id = document.getElementById('debt-id').value;
+  const name = document.getElementById('debt-name').value.trim();
+  if (!name) { toast('Isi nama hutang'); return; }
+  const existing = id ? DATA.debts.find(d => d.id === id) : null;
+  const item = {
+    id: id || uid(),
+    name,
+    ownerId: document.getElementById('debt-owner').value,
+    balance: parseFloat(document.getElementById('debt-balance').value) || 0,
+    interestRate: parseFloat(document.getElementById('debt-interest').value) || 0,
+    monthlyPayment: parseFloat(document.getElementById('debt-payment').value) || 0,
+    dueDay: parseInt(document.getElementById('debt-due-day').value) || null,
+    payments: existing ? existing.payments || [] : []
+  };
+  if (id) {
+    const i = DATA.debts.findIndex(x => x.id === id);
+    if (i >= 0) DATA.debts[i] = item;
+  } else {
+    DATA.debts.push(item);
+  }
+  closeModal('m-debt');
+  commit();
+  toast('Hutang tersimpan');
+}
+
+function delDebt(id) {
+  if (!confirm('Hapus hutang ini? Semua riwayat pembayaran akan terhapus.')) return;
+  DATA.debts = DATA.debts.filter(d => d.id !== id);
+  commit();
+  toast('Dihapus');
+}
+
+function openDebtPayForm(debtId) {
+  const debt = DATA.debts.find(d => d.id === debtId);
+  if (!debt) return;
+  document.getElementById('debt-pay-debtId').value = debtId;
+  document.getElementById('debt-pay-id').value = '';
+  document.getElementById('debt-pay-amount').value = debt.monthlyPayment || '';
+  document.getElementById('debt-pay-date').value = todayISO();
+  document.getElementById('debt-pay-note').value = '';
+  openModal('m-debt-pay');
+}
+
+function saveDebtPayment() {
+  const debtId = document.getElementById('debt-pay-debtId').value;
+  const amount = parseFloat(document.getElementById('debt-pay-amount').value) || 0;
+  if (amount <= 0) { toast('Isi jumlah'); return; }
+  const debt = DATA.debts.find(d => d.id === debtId);
+  if (!debt) return;
+
+  const payment = {
+    id: uid(),
+    amount,
+    date: document.getElementById('debt-pay-date').value || todayISO(),
+    note: document.getElementById('debt-pay-note').value.trim()
+  };
+
+  debt.payments = debt.payments || [];
+  debt.payments.push(payment);
+  debt.balance = Math.max(0, debt.balance - amount);
+
+  closeModal('m-debt-pay');
+  commit();
+  toast(`Bayar ${fmtRpK(amount)} tersimpan`);
+}
+
+function delDebtPayment(debtId, paymentId) {
+  if (!confirm('Hapus pembayaran ini? Sisa hutang akan ditambah kembali.')) return;
+  const debt = DATA.debts.find(d => d.id === debtId);
+  if (!debt) return;
+  const payment = (debt.payments || []).find(p => p.id === paymentId);
+  if (!payment) return;
+  debt.balance += payment.amount;
+  debt.payments = debt.payments.filter(p => p.id !== paymentId);
+  commit();
+  toast('Pembayaran dihapus');
+}
+
+/* ═══════════════════════════
+   TAX
+═══════════════════════════ */
+function renderTaxList() {
+  const list = [...DATA.taxes].sort((a, b) => {
+    const da = daysUntil(a.dueDate); const db = daysUntil(b.dueDate);
+    return (da ?? 99999) - (db ?? 99999);
+  });
+  const el = document.getElementById('tax-list');
+  if (list.length === 0) {
+    el.innerHTML = `<div class="empty">Belum ada pajak tercatat. Tambah PBB rumah, STNK kendaraan, SPT tahunan, dll.</div>`;
+    return;
+  }
+  el.innerHTML = list.map(t => {
+    const days = daysUntil(t.dueDate);
+    const type = TAX_TYPES[t.type] || TAX_TYPES.other;
+    let pillClass = 'pill-muted', pillText = '—';
+    if (days !== null) {
+      if (days < 0) { pillClass = 'pill-rust'; pillText = `Telat ${Math.abs(days)} hari`; }
+      else if (days === 0) { pillClass = 'pill-rust'; pillText = 'Hari ini'; }
+      else if (days <= 7) { pillClass = 'pill-rust'; pillText = `${days} hari lagi`; }
+      else if (days <= 30) { pillClass = 'pill-gold'; pillText = `${days} hari lagi`; }
+      else { pillClass = 'pill-forest'; pillText = `${days} hari lagi`; }
+    }
+    const totalPaid = (t.payments || []).reduce((s, p) => s + (p.amount || 0), 0);
+    const paymentsHtml = (t.payments || []).length > 0 ? `
+      <div class="sublist">
+        <div style="font-size:10px;letter-spacing:1px;color:var(--muted);margin-bottom:6px;font-weight:700">RIWAYAT BAYAR (${(t.payments || []).length}x · ${fmtRpK(totalPaid)})</div>
+        ${(t.payments || []).slice().reverse().map(p => `
+          <div class="sublist-row">
+            <div>
+              <div style="font-weight:600;color:var(--ink);font-size:12px">${esc(p.note || 'Bayar pajak')}</div>
+              <div class="date">${fmtDate(p.date)}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <span class="amt">${fmtRpK(p.amount)}</span>
+              <button onclick="delTaxPayment('${t.id}','${p.id}')" title="Hapus">×</button>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    ` : '';
+    return `
+      <div class="item">
+        <div class="item-top">
+          <div style="flex:1">
+            <div class="item-name">${type.icon} ${esc(t.name)}</div>
+            <div class="item-sub">
+              <span>${type.label}</span>
+              <span class="pill ${pillClass}">${pillText}</span>
+            </div>
+          </div>
+          <div class="item-amt">${t.amount ? fmtRpK(t.amount) : '—'}</div>
+        </div>
+        <div class="item-meta">
+          <div><div class="mk">JATUH TEMPO</div><div class="mv">${fmtDate(t.dueDate)}</div></div>
+          <div><div class="mk">FREKUENSI</div><div class="mv">${t.frequency === 'yearly' ? 'Tahunan' : t.frequency === 'monthly' ? 'Bulanan' : 'Sekali'}</div></div>
+        </div>
+        ${t.notes ? `<div style="margin-top:8px;padding:8px;background:var(--cream);border:1px solid var(--shadow);font-size:12px;color:var(--ink);line-height:1.5">${esc(t.notes)}</div>` : ''}
+        ${paymentsHtml}
+        <div class="item-actions">
+          <button class="btn-ghost primary" onclick="openTaxPayForm('${t.id}')">+ Bayar</button>
+          <button class="btn-ghost" onclick="openTaxForm('${t.id}')">Edit</button>
+          <button class="btn-ghost danger" onclick="delTax('${t.id}')">Hapus</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openTaxForm(id) {
+  const t = id ? DATA.taxes.find(x => x.id === id) : null;
+  document.getElementById('tax-title').textContent = t ? 'Edit Pajak' : 'Tambah Pajak';
+  document.getElementById('tax-id').value = t ? t.id : '';
+  document.getElementById('tax-name').value = t ? t.name : '';
+  document.getElementById('tax-type').value = t ? t.type : 'pbb';
+  document.getElementById('tax-freq').value = t ? t.frequency : 'yearly';
+  document.getElementById('tax-amount').value = t ? t.amount || '' : '';
+  document.getElementById('tax-due').value = t ? t.dueDate || '' : '';
+  document.getElementById('tax-notes').value = t ? t.notes || '' : '';
+  openModal('m-tax');
+}
+
+function saveTax() {
+  const id = document.getElementById('tax-id').value;
+  const name = document.getElementById('tax-name').value.trim();
+  if (!name) { toast('Isi nama pajak'); return; }
+  const existing = id ? DATA.taxes.find(t => t.id === id) : null;
+  const item = {
+    id: id || uid(),
+    name,
+    type: document.getElementById('tax-type').value,
+    frequency: document.getElementById('tax-freq').value,
+    amount: parseFloat(document.getElementById('tax-amount').value) || 0,
+    dueDate: document.getElementById('tax-due').value,
+    notes: document.getElementById('tax-notes').value.trim(),
+    payments: existing ? existing.payments || [] : []
+  };
+  if (id) {
+    const i = DATA.taxes.findIndex(x => x.id === id);
+    if (i >= 0) DATA.taxes[i] = item;
+  } else {
+    DATA.taxes.push(item);
+  }
+  closeModal('m-tax');
+  commit();
+  toast('Pajak tersimpan');
+}
+
+function delTax(id) {
+  if (!confirm('Hapus pajak ini?')) return;
+  DATA.taxes = DATA.taxes.filter(t => t.id !== id);
+  commit();
+  toast('Dihapus');
+}
+
+function openTaxPayForm(taxId) {
+  const tax = DATA.taxes.find(t => t.id === taxId);
+  if (!tax) return;
+  document.getElementById('tax-pay-taxId').value = taxId;
+  document.getElementById('tax-pay-id').value = '';
+  document.getElementById('tax-pay-amount').value = tax.amount || '';
+  document.getElementById('tax-pay-date').value = todayISO();
+  document.getElementById('tax-pay-note').value = '';
+  openModal('m-tax-pay');
+}
+
+function saveTaxPayment() {
+  const taxId = document.getElementById('tax-pay-taxId').value;
+  const amount = parseFloat(document.getElementById('tax-pay-amount').value) || 0;
+  if (amount <= 0) { toast('Isi jumlah'); return; }
+  const tax = DATA.taxes.find(t => t.id === taxId);
+  if (!tax) return;
+
+  const payment = {
+    id: uid(),
+    amount,
+    date: document.getElementById('tax-pay-date').value || todayISO(),
+    note: document.getElementById('tax-pay-note').value.trim()
+  };
+
+  tax.payments = tax.payments || [];
+  tax.payments.push(payment);
+
+  // Move due date forward
+  if (tax.frequency === 'yearly' && tax.dueDate) {
+    const d = new Date(tax.dueDate);
+    d.setFullYear(d.getFullYear() + 1);
+    tax.dueDate = d.toISOString().split('T')[0];
+  } else if (tax.frequency === 'monthly' && tax.dueDate) {
+    const d = new Date(tax.dueDate);
+    d.setMonth(d.getMonth() + 1);
+    tax.dueDate = d.toISOString().split('T')[0];
+  }
+
+  closeModal('m-tax-pay');
+  commit();
+  toast('Pembayaran tercatat');
+}
+
+function delTaxPayment(taxId, paymentId) {
+  if (!confirm('Hapus pembayaran ini?')) return;
+  const tax = DATA.taxes.find(t => t.id === taxId);
+  if (!tax) return;
+  tax.payments = (tax.payments || []).filter(p => p.id !== paymentId);
+  commit();
+  toast('Pembayaran dihapus');
+}
+
+/* ═══════════════════════════
+   KAS TAB
+═══════════════════════════ */
+let _kasTab = 'tx';
+let _txFilter = 'all';
+let _billFilter = 'all';
+
+function setKasTab(tab) {
+  _kasTab = tab;
+  ['tx', 'bill'].forEach(t => {
+    document.getElementById('kas-tab-' + t).classList.toggle('on', t === tab);
+    document.getElementById('kas-panel-' + t).style.display = t === tab ? 'block' : 'none';
+  });
+  renderKas();
+}
+
+function renderKas() {
+  if (_kasTab === 'tx') renderTxList();
+  else renderBillList();
+}
+
+function setTxFilter(f) {
+  _txFilter = f;
+  document.querySelectorAll('[data-tx-filter]').forEach(b => b.classList.toggle('on', b.dataset.txFilter === f));
+  renderTxList();
+}
+
+function renderTxList() {
+  const now = new Date();
+  const thisMonth = DATA.transactions.filter(t => {
+    const d = new Date(t.date);
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  });
+  const inSum = thisMonth.filter(t => t.type === 'income').reduce((s, t) => s + (t.amount || 0), 0);
+  const outSum = thisMonth.filter(t => t.type === 'expense').reduce((s, t) => s + (t.amount || 0), 0);
+  document.getElementById('month-in').textContent = fmtRpK(inSum);
+  document.getElementById('month-out').textContent = fmtRpK(outSum);
+  document.getElementById('month-net').textContent = fmtRpK(inSum - outSum);
+
+  const byCat = {};
+  thisMonth.filter(t => t.type === 'expense').forEach(t => {
+    const c = t.category || 'Lainnya';
+    byCat[c] = (byCat[c] || 0) + (t.amount || 0);
+  });
+  const catBlock = document.getElementById('cat-block');
+  if (Object.keys(byCat).length > 0) {
+    catBlock.innerHTML = `
+      <div class="sec-label"><h2>KATEGORI BULAN INI</h2></div>
+      <div class="card" style="margin-bottom:16px">
+        ${Object.entries(byCat).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([cat, val], i, arr) => `
+          <div style="display:flex;justify-content:space-between;padding:8px 0;${i < arr.length - 1 ? 'border-bottom:1px dotted var(--shadow)' : ''};font-size:13px">
+            <span style="color:var(--ink)">${esc(cat)}</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--ink)">${fmtRpK(val)}</span>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  } else {
+    catBlock.innerHTML = '';
+  }
+
+  let list = [...DATA.transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
+  if (_txFilter === 'in') list = list.filter(t => t.type === 'income');
+  else if (_txFilter === 'out') list = list.filter(t => t.type === 'expense');
+  list = list.slice(0, 50);
+
+  const el = document.getElementById('tx-list');
+  if (list.length === 0) {
+    el.innerHTML = `<div class="empty">Belum ada transaksi tercatat.</div>`;
+    return;
+  }
+  el.innerHTML = list.map(t => {
+    const owner = getOwner(t.ownerId);
+    return `
+      <div class="item ${t.type === 'income' ? 'left-forest' : 'left-rust'}" onclick="openTxForm('${t.id}')" style="cursor:pointer">
+        <div class="item-top">
+          <div style="flex:1">
+            <div class="item-name">${esc(t.note || t.category)}</div>
+            <div class="item-sub">
+              <span>${fmtDate(t.date)}</span>
+              <span>· ${esc(t.category)}</span>
+              ${owner ? `<span>· ${esc(owner.name)}</span>` : ''}
+            </div>
+          </div>
+          <div class="item-amt ${t.type === 'income' ? 'green' : 'red'}">
+            ${t.type === 'income' ? '+' : '−'}${fmtRpK(t.amount)}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openTxForm(id) {
+  const t = id ? DATA.transactions.find(x => x.id === id) : null;
+  document.getElementById('tx-title').textContent = t ? 'Edit Transaksi' : 'Catat Transaksi';
+  document.getElementById('tx-id').value = t ? t.id : '';
+  setTxType(t ? t.type : 'expense');
+  document.getElementById('tx-amount').value = t ? t.amount || '' : '';
+  document.getElementById('tx-note').value = t ? t.note || '' : '';
+  document.getElementById('tx-date').value = t ? t.date : todayISO();
+  fillOwnerSelect('tx-owner', t ? t.ownerId : '');
+
+  // Add delete button if editing
+  const existingDel = document.getElementById('tx-del-btn');
+  if (existingDel) existingDel.remove();
+  if (t) {
+    const actions = document.querySelector('#m-tx .modal-actions');
+    const delBtn = document.createElement('button');
+    delBtn.id = 'tx-del-btn';
+    delBtn.className = 'btn-cancel';
+    delBtn.style.color = 'var(--rust)';
+    delBtn.style.borderColor = 'var(--rust)';
+    delBtn.textContent = 'HAPUS';
+    delBtn.onclick = () => delTx(t.id);
+    actions.insertBefore(delBtn, actions.firstChild);
+  }
+
+  openModal('m-tx');
+}
+
+function setTxType(type) {
+  document.getElementById('tx-type').value = type;
+  document.getElementById('tx-btn-out').className = type === 'expense' ? 'on-out' : '';
+  document.getElementById('tx-btn-in').className = type === 'income' ? 'on-in' : '';
+}
+
+function saveTx() {
+  const id = document.getElementById('tx-id').value;
+  const amount = parseFloat(document.getElementById('tx-amount').value) || 0;
+  if (amount <= 0) { toast('Isi jumlah'); return; }
+  const note = document.getElementById('tx-note').value.trim();
+  const type = document.getElementById('tx-type').value;
+  const item = {
+    id: id || uid(),
+    type,
+    amount,
+    note,
+    category: detectCat(note, type),
+    date: document.getElementById('tx-date').value || todayISO(),
+    ownerId: document.getElementById('tx-owner').value
+  };
+  if (id) {
+    const i = DATA.transactions.findIndex(x => x.id === id);
+    if (i >= 0) DATA.transactions[i] = item;
+  } else {
+    DATA.transactions.push(item);
+  }
+  closeModal('m-tx');
+  commit();
+  toast('Tersimpan');
+}
+
+function delTx(id) {
+  if (!confirm('Hapus transaksi ini?')) return;
+  DATA.transactions = DATA.transactions.filter(t => t.id !== id);
+  closeModal('m-tx');
+  commit();
+  toast('Dihapus');
+}
+
+function setBillFilter(f) {
+  _billFilter = f;
+  document.querySelectorAll('[data-bill-filter]').forEach(b => b.classList.toggle('on', b.dataset.billFilter === f));
+  renderBillList();
+}
+
+function renderBillList() {
+  const all = DATA.bills;
+  const monthly = all.filter(b => b.frequency === 'monthly').reduce((s, b) => s + (b.amount || 0), 0);
+  const yearly = all.filter(b => b.frequency === 'yearly').reduce((s, b) => s + (b.amount || 0), 0);
+  document.getElementById('bill-total').textContent = fmtRpK(monthly + yearly / 12);
+  document.getElementById('bill-unpaid').textContent = all.filter(b => !isPaidThisCycle(b)).length;
+  document.getElementById('bill-paid').textContent = all.filter(b => isPaidThisCycle(b)).length;
+
+  let list = [...all];
+  if (_billFilter === 'unpaid') list = list.filter(b => !isPaidThisCycle(b));
+  else if (_billFilter === 'paid') list = list.filter(b => isPaidThisCycle(b));
+  else if (_billFilter === 'upcoming') list = list.filter(b => {
+    const d = daysUntil(b.dueDate);
+    return !isPaidThisCycle(b) && d !== null && d >= 0 && d <= 7;
+  });
+  list.sort((a, b) => {
+    const pa = isPaidThisCycle(a), pb = isPaidThisCycle(b);
+    if (pa !== pb) return pa ? 1 : -1;
+    return (daysUntil(a.dueDate) ?? 99999) - (daysUntil(b.dueDate) ?? 99999);
+  });
+
+  const el = document.getElementById('bill-list');
+  if (list.length === 0) {
+    el.innerHTML = `<div class="empty">Tidak ada tagihan ${_billFilter === 'all' ? '' : 'di filter ini'}.</div>`;
+    return;
+  }
+  el.innerHTML = list.map(b => {
+    const paid = isPaidThisCycle(b);
+    const days = daysUntil(b.dueDate);
+    let pillClass = 'pill-muted', pillText = 'Belum bayar';
+    if (paid) { pillClass = 'pill-forest'; pillText = '✓ Sudah bayar'; }
+    else if (days !== null) {
+      if (days < 0) { pillClass = 'pill-rust'; pillText = `Telat ${Math.abs(days)} hari`; }
+      else if (days === 0) { pillClass = 'pill-rust'; pillText = 'Hari ini'; }
+      else if (days <= 7) { pillClass = 'pill-gold'; pillText = `${days} hari lagi`; }
+    }
+    return `
+      <div class="item" style="opacity:${paid ? 0.7 : 1}">
+        <div class="item-top">
+          <div style="flex:1">
+            <div class="item-name">${esc(b.name)}</div>
+            <div class="item-sub">
+              <span class="pill ${pillClass}">${pillText}</span>
+            </div>
+          </div>
+          <div class="item-amt">${fmtRpK(b.amount)}</div>
+        </div>
+        <div class="item-meta">
+          <div><div class="mk">JATUH TEMPO</div><div class="mv">${fmtDate(b.dueDate)}</div></div>
+          <div><div class="mk">FREKUENSI</div><div class="mv">${b.frequency === 'yearly' ? 'Tahunan' : 'Bulanan'}</div></div>
+        </div>
+        <button class="btn-secondary ${paid ? '' : 'success'}" onclick="togglePaid('${b.id}')" style="margin-top:10px">
+          ${paid ? 'BATAL TANDAI' : 'TANDAI SUDAH BAYAR'}
+        </button>
+        <div class="item-actions">
+          <button class="btn-ghost" onclick="openBillForm('${b.id}')">Edit</button>
+          <button class="btn-ghost danger" onclick="delBill('${b.id}')">Hapus</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openBillForm(id) {
+  const b = id ? DATA.bills.find(x => x.id === id) : null;
+  document.getElementById('bill-title').textContent = b ? 'Edit Tagihan' : 'Tambah Tagihan';
+  document.getElementById('bill-id').value = b ? b.id : '';
+  document.getElementById('bill-name').value = b ? b.name : '';
+  document.getElementById('bill-amount').value = b ? b.amount || '' : '';
+  document.getElementById('bill-freq').value = b ? b.frequency : 'monthly';
+  document.getElementById('bill-due').value = b ? b.dueDate || '' : todayISO();
+  openModal('m-bill');
+}
+
+function saveBill() {
+  const id = document.getElementById('bill-id').value;
+  const name = document.getElementById('bill-name').value.trim();
+  if (!name) { toast('Isi nama tagihan'); return; }
+  const existing = id ? DATA.bills.find(b => b.id === id) : null;
+  const item = {
+    id: id || uid(),
+    name,
+    amount: parseFloat(document.getElementById('bill-amount').value) || 0,
+    frequency: document.getElementById('bill-freq').value,
+    dueDate: document.getElementById('bill-due').value,
+    lastPaid: existing ? existing.lastPaid : null
+  };
+  if (id) {
+    const i = DATA.bills.findIndex(x => x.id === id);
+    if (i >= 0) DATA.bills[i] = item;
+  } else {
+    DATA.bills.push(item);
+  }
+  closeModal('m-bill');
+  commit();
+  toast('Tersimpan');
+}
+
+function delBill(id) {
+  if (!confirm('Hapus tagihan ini?')) return;
+  DATA.bills = DATA.bills.filter(b => b.id !== id);
+  commit();
+  toast('Dihapus');
+}
+
+function togglePaid(id) {
+  const b = DATA.bills.find(x => x.id === id);
+  if (!b) return;
+  b.lastPaid = isPaidThisCycle(b) ? null : todayISO();
+  commit();
+  toast(b.lastPaid ? 'Ditandai sudah bayar' : 'Status dibatalkan');
+}
+
+/* ═══════════════════════════
+   GOALS
+═══════════════════════════ */
+function renderTujuan() {
+  const totalTarget = DATA.goals.reduce((s, g) => s + (g.target || 0), 0);
+  const totalSaved = DATA.goals.reduce((s, g) => s + (g.deposits || []).reduce((ss, d) => ss + (d.amount || 0), 0), 0);
+  document.getElementById('goal-target').textContent = fmtRpK(totalTarget);
+  document.getElementById('goal-saved').textContent = fmtRpK(totalSaved);
+
+  const el = document.getElementById('goal-list');
+  if (DATA.goals.length === 0) {
+    el.innerHTML = `<div class="empty">Belum ada tujuan. Mis: dana darurat, beli rumah, sekolah anak, liburan, modal usaha.</div>`;
+    return;
+  }
+  el.innerHTML = DATA.goals.map(g => {
+    const saved = (g.deposits || []).reduce((s, d) => s + (d.amount || 0), 0);
+    const pct = g.target > 0 ? Math.min(100, saved / g.target * 100) : 0;
+    const remaining = Math.max(0, (g.target || 0) - saved);
+    const days = daysUntil(g.deadline);
+
+    let timeText = '';
+    if (g.deadline && days !== null) {
+      if (days < 0) timeText = `Telat ${Math.abs(days)} hari`;
+      else if (days === 0) timeText = 'Deadline hari ini';
+      else if (days < 30) timeText = `${days} hari lagi`;
+      else if (days < 365) timeText = `${Math.round(days / 30)} bulan lagi`;
+      else timeText = `${(days / 365).toFixed(1)} tahun lagi`;
+    }
+
+    let neededText = '';
+    if (remaining > 0 && days && days > 0) {
+      const needed = remaining / (days / 30);
+      neededText = `Perlu nabung ${fmtRpK(needed)}/bulan`;
+    }
+
+    const depositsHtml = (g.deposits || []).length > 0 ? `
+      <div class="sublist">
+        <div style="font-size:10px;letter-spacing:1px;color:var(--muted);margin-bottom:6px;font-weight:700">RIWAYAT SETORAN (${(g.deposits || []).length}x)</div>
+        ${(g.deposits || []).slice().reverse().slice(0, 5).map(d => `
+          <div class="sublist-row">
+            <div>
+              <div style="font-weight:600;color:var(--ink);font-size:12px">${esc(d.note || 'Setor dana')}</div>
+              <div class="date">${fmtDate(d.date)}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <span class="amt">${fmtRpK(d.amount)}</span>
+              <button onclick="delDeposit('${g.id}','${d.id}')" title="Hapus">×</button>
+            </div>
+          </div>
+        `).join('')}
+        ${(g.deposits || []).length > 5 ? `<div style="text-align:center;padding:6px;font-size:11px;color:var(--muted)">+${(g.deposits || []).length - 5} setoran sebelumnya</div>` : ''}
+      </div>
+    ` : '';
+
+    return `
+      <div class="item">
+        <div class="item-top">
+          <div style="flex:1">
+            <div class="item-name">🎯 ${esc(g.name)}</div>
+            <div class="item-sub">
+              ${g.deadline ? `<span>${fmtDate(g.deadline)}</span>` : ''}
+              ${timeText ? `<span>· ${timeText}</span>` : ''}
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:13px;margin-top:10px;margin-bottom:6px">
+          <span style="color:var(--forest);font-weight:700">${fmtRpK(saved)}</span>
+          <span style="color:var(--muted)">/ ${fmtRpK(g.target)}</span>
+        </div>
+        <div class="progress">
+          <div style="width:${pct}%;background:${pct >= 100 ? 'var(--forest)' : 'var(--gold)'}"></div>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px;text-align:right;font-weight:600">${pct.toFixed(0)}%</div>
+        ${neededText ? `<div style="margin-top:6px;font-size:11px;color:var(--gold);font-weight:600;font-style:italic">💡 ${neededText}</div>` : ''}
+        ${depositsHtml}
+        <div class="item-actions" style="margin-top:10px">
+          <button class="btn-ghost primary" onclick="openDepositForm('${g.id}')">+ Setor</button>
+          ${g.monthlyAmount ? `<button class="btn-ghost" onclick="quickDeposit('${g.id}')" title="Setor ${fmtRpK(g.monthlyAmount)}">+ Rutin</button>` : ''}
+          <button class="btn-ghost" onclick="openGoalForm('${g.id}')">Edit</button>
+          <button class="btn-ghost danger" onclick="delGoal('${g.id}')">Hapus</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openGoalForm(id) {
+  const g = id ? DATA.goals.find(x => x.id === id) : null;
+  document.getElementById('goal-title').textContent = g ? 'Edit Tujuan' : 'Tambah Tujuan';
+  document.getElementById('goal-id').value = g ? g.id : '';
+  document.getElementById('goal-name').value = g ? g.name : '';
+  document.getElementById('goal-target').value = g ? g.target || '' : '';
+  document.getElementById('goal-deadline').value = g ? g.deadline || '' : '';
+  document.getElementById('goal-monthly').value = g ? g.monthlyAmount || '' : '';
+  openModal('m-goal');
+}
+
+function saveGoal() {
+  const id = document.getElementById('goal-id').value;
+  const name = document.getElementById('goal-name').value.trim();
+  if (!name) { toast('Isi nama tujuan'); return; }
+  const existing = id ? DATA.goals.find(g => g.id === id) : null;
+  const item = {
+    id: id || uid(),
+    name,
+    target: parseFloat(document.getElementById('goal-target').value) || 0,
+    deadline: document.getElementById('goal-deadline').value,
+    monthlyAmount: parseFloat(document.getElementById('goal-monthly').value) || 0,
+    deposits: existing ? existing.deposits || [] : []
+  };
+  if (id) {
+    const i = DATA.goals.findIndex(x => x.id === id);
+    if (i >= 0) DATA.goals[i] = item;
+  } else {
+    DATA.goals.push(item);
+  }
+  closeModal('m-goal');
+  commit();
+  toast('Tersimpan');
+}
+
+function delGoal(id) {
+  if (!confirm('Hapus tujuan ini? Riwayat setoran akan terhapus.')) return;
+  DATA.goals = DATA.goals.filter(g => g.id !== id);
+  commit();
+  toast('Dihapus');
+}
+
+function openDepositForm(goalId) {
+  const goal = DATA.goals.find(g => g.id === goalId);
+  if (!goal) return;
+  document.getElementById('deposit-goalId').value = goalId;
+  document.getElementById('deposit-id').value = '';
+  document.getElementById('deposit-amount').value = goal.monthlyAmount || '';
+  document.getElementById('deposit-date').value = todayISO();
+  document.getElementById('deposit-note').value = '';
+  openModal('m-deposit');
+}
+
+function saveDeposit() {
+  const goalId = document.getElementById('deposit-goalId').value;
+  const amount = parseFloat(document.getElementById('deposit-amount').value) || 0;
+  if (amount <= 0) { toast('Isi jumlah'); return; }
+  const goal = DATA.goals.find(g => g.id === goalId);
+  if (!goal) return;
+  const deposit = {
+    id: uid(),
+    amount,
+    date: document.getElementById('deposit-date').value || todayISO(),
+    note: document.getElementById('deposit-note').value.trim()
+  };
+  goal.deposits = goal.deposits || [];
+  goal.deposits.push(deposit);
+  closeModal('m-deposit');
+  commit();
+  toast(`Setor ${fmtRpK(amount)} ke "${goal.name}"`);
+}
+
+function quickDeposit(goalId) {
+  const goal = DATA.goals.find(g => g.id === goalId);
+  if (!goal || !goal.monthlyAmount) return;
+  if (!confirm(`Setor ${fmtRp(goal.monthlyAmount)} ke "${goal.name}"?`)) return;
+  goal.deposits = goal.deposits || [];
+  goal.deposits.push({
+    id: uid(),
+    amount: goal.monthlyAmount,
+    date: todayISO(),
+    note: 'Setoran rutin bulanan'
+  });
+  commit();
+  toast(`Setor rutin ${fmtRpK(goal.monthlyAmount)}`);
+}
+
+function delDeposit(goalId, depositId) {
+  if (!confirm('Hapus setoran ini?')) return;
+  const goal = DATA.goals.find(g => g.id === goalId);
+  if (!goal) return;
+  goal.deposits = (goal.deposits || []).filter(d => d.id !== depositId);
+  commit();
+  toast('Setoran dihapus');
+}
+
+/* ═══════════════════════════
+   SETTINGS
+═══════════════════════════ */
+function renderSettings() {
+  document.getElementById('set-name').value = DATA.profile.name || '';
+  document.getElementById('set-income').value = DATA.profile.monthlyIncome || '';
+  document.getElementById('set-ef-current').value = DATA.emergencyFund?.current || '';
+  document.getElementById('set-ef-months').value = DATA.emergencyFund?.targetMonths || 6;
+
+  const el = document.getElementById('owner-list-settings');
+  el.innerHTML = DATA.owners.map(o => `
+    <div class="set-row">
+      <span class="owner-dot" style="background:${o.color}"></span>
+      <div class="grow">
+        <div class="l">${esc(o.name)}</div>
+      </div>
+      <button onclick="renameOwner('${o.id}')" style="font-size:11px;color:var(--muted);padding:6px 10px;border:1px solid var(--shadow)">Ubah</button>
+      <button onclick="delOwner('${o.id}')" style="font-size:14px;color:var(--rust);padding:6px 10px">×</button>
+    </div>
+  `).join('');
+
+  renderCloudBlock();
+}
+
+function saveProfile() {
+  DATA.profile.name = document.getElementById('set-name').value.trim() || 'Anda';
+  DATA.profile.monthlyIncome = parseFloat(document.getElementById('set-income').value) || 0;
+  commit();
+  toast('Profil tersimpan');
+}
+
+function saveEmergency() {
+  DATA.emergencyFund.current = parseFloat(document.getElementById('set-ef-current').value) || 0;
+  DATA.emergencyFund.targetMonths = parseInt(document.getElementById('set-ef-months').value) || 6;
+  commit();
+  toast('Tabungan darurat tersimpan');
+}
+
+function addOwner() {
+  const name = document.getElementById('new-owner-name').value.trim();
+  if (!name) return;
+  const colors = ['#0F4C2C', '#A87838', '#2D3656', '#7C3AED', '#A6573D', '#1F6E47', '#B91C1C'];
+  const used = DATA.owners.map(o => o.color);
+  const color = colors.find(c => !used.includes(c)) || colors[0];
+  DATA.owners.push({ id: 'o' + uid(), name, color });
+  document.getElementById('new-owner-name').value = '';
+  commit();
+  toast('Pemilik ditambah');
+}
+
+function renameOwner(id) {
+  const o = DATA.owners.find(x => x.id === id);
+  if (!o) return;
+  const newName = prompt('Ubah nama pemilik:', o.name);
+  if (!newName || !newName.trim()) return;
+  o.name = newName.trim();
+  commit();
+  toast('Diubah');
+}
+
+function delOwner(id) {
+  const o = DATA.owners.find(x => x.id === id);
+  if (!o) return;
+  if (!confirm(`Hapus pemilik "${o.name}"? Aset/hutang yang terkait akan jadi tidak punya pemilik.`)) return;
+  DATA.owners = DATA.owners.filter(x => x.id !== id);
+  commit();
+  toast('Pemilik dihapus');
+}
+
+function fillOwnerSelect(selectId, currentId) {
+  const sel = document.getElementById(selectId);
+  sel.innerHTML = '<option value="">— tidak diatur —</option>' +
+    DATA.owners.map(o => `<option value="${o.id}" ${o.id === currentId ? 'selected' : ''}>${esc(o.name)}</option>`).join('');
+}
+
+/* ═══════════════════════════
+   BACKUP / RESTORE
+═══════════════════════════ */
+function exportData() {
+  const json = JSON.stringify({ v: 3, ts: Date.now(), data: DATA });
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(json).then(() => {
+      toast('✓ Tersalin ke clipboard');
+    }).catch(() => {
+      prompt('Salin data ini:', json);
+    });
+  } else {
+    prompt('Salin data ini:', json);
+  }
+}
+
+function importData() {
+  const txt = prompt('Paste backup data:');
+  if (!txt) return;
+  try {
+    const parsed = JSON.parse(txt);
+    if (!parsed.data) { toast('Format salah'); return; }
+    if (!confirm('Pulihkan data ini? Data sekarang akan diganti.')) return;
+    DATA = { ...DEFAULT_DATA, ...parsed.data };
+    commit();
+    toast('Data dipulihkan');
+  } catch {
+    toast('Format salah');
+  }
+}
+
+function resetAllData() {
+  if (!confirm('HAPUS SEMUA DATA dan mulai dari awal? Tidak bisa di-undo.')) return;
+  if (!confirm('Yakin? Semua catatan keuangan, aset, hutang, transaksi akan hilang.')) return;
+  DATA = JSON.parse(JSON.stringify(DEFAULT_DATA));
+  commit();
+  toast('Data direset');
+  setTimeout(() => location.reload(), 1000);
+}
+
+/* ═══════════════════════════
+   CLOUD SYNC (JSONBin)
+═══════════════════════════ */
+const JB_API = 'https://api.jsonbin.io/v3';
+let _cloudPushTimer = null;
+
+function getCloud() { return DATA.cloud || {}; }
+function saveCloud(c) { DATA.cloud = c; saveData(DATA); }
+
+function schedCloudPush() {
+  const c = getCloud();
+  if (!c.key || !c.bin) return;
+  clearTimeout(_cloudPushTimer);
+  _cloudPushTimer = setTimeout(cloudPush, 2000);
+}
+
+async function cloudPush() {
+  const c = getCloud();
+  if (!c.key || !c.bin) return;
+  try {
+    setCloudStatus('syncing');
+    const r = await fetch(`${JB_API}/b/${c.bin}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Master-Key': c.key
+      },
+      body: JSON.stringify({ data: DATA, ts: Date.now() })
+    });
+    if (!r.ok) throw new Error('Sync failed');
+    c.lastSync = Date.now();
+    DATA.cloud = c;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA));
+    setCloudStatus('synced');
+  } catch (e) {
+    setCloudStatus('error');
+  }
+}
+
+async function cloudPull() {
+  const c = getCloud();
+  if (!c.key || !c.bin) return;
+  try {
+    setCloudStatus('syncing');
+    const r = await fetch(`${JB_API}/b/${c.bin}/latest`, {
+      headers: { 'X-Master-Key': c.key }
+    });
+    if (!r.ok) throw new Error('Pull failed');
+    const j = await r.json();
+    if (j.record && j.record.data) {
+      DATA = { ...DEFAULT_DATA, ...j.record.data };
+      DATA.cloud = c;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA));
+      c.lastSync = Date.now();
+      DATA.cloud = c;
+      saveData(DATA);
+      renderAll();
+      setCloudStatus('synced');
+      toast('Data diambil dari cloud');
+    }
+  } catch (e) {
+    setCloudStatus('error');
+    toast('Gagal sync: ' + e.message);
+  }
+}
+
+async function createBin(key) {
+  const r = await fetch(`${JB_API}/b`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Master-Key': key,
+      'X-Bin-Name': 'KeuanganKeluarga',
+      'X-Bin-Private': 'true'
+    },
+    body: JSON.stringify({ data: DATA, ts: Date.now() })
+  });
+  if (!r.ok) {
+    const text = await r.text();
+    throw new Error(text);
+  }
+  const j = await r.json();
+  return j.metadata.id;
+}
+
+function setCloudStatus(status) {
+  const el = document.getElementById('cloud-status');
+  if (!el) return;
+  const c = getCloud();
+  if (!c.key || !c.bin) {
+    el.classList.remove('on');
+    return;
+  }
+  el.classList.add('on');
+  if (status === 'syncing') el.textContent = '☁ sync...';
+  else if (status === 'synced') {
+    const sync = c.lastSync ? new Date(c.lastSync).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '—';
+    el.textContent = '☁ ' + sync;
+  } else if (status === 'error') el.textContent = '☁ error';
+}
+
+function renderCloudStatus() {
+  setCloudStatus('synced');
+}
+
+function renderCloudBlock() {
+  const c = getCloud();
+  const el = document.getElementById('cloud-block');
+  if (!el) return;
+
+  if (c.key && c.bin) {
+    const lastSync = c.lastSync ? new Date(c.lastSync).toLocaleString('id-ID') : 'belum';
+    el.innerHTML = `
+      <div style="background:var(--forestBg);border:1px solid var(--forest);padding:14px;margin-bottom:10px">
+        <div style="font-size:13px;font-weight:700;color:var(--forest);margin-bottom:4px">✓ Cloud Aktif</div>
+        <div style="font-size:11px;color:var(--ink)">Sync terakhir: ${lastSync}</div>
+      </div>
+      <button class="btn-secondary" onclick="cloudPull()" style="margin-bottom:6px">🔄 AMBIL DATA DARI CLOUD</button>
+      <button class="btn-secondary" onclick="cloudPush()" style="margin-bottom:6px">📤 KIRIM DATA KE CLOUD</button>
+      <div style="font-size:11px;color:var(--muted);margin:10px 0;padding:10px;background:var(--paper);border:1px solid var(--shadow);font-family:'JetBrains Mono',monospace;word-break:break-all">
+        Bin ID: ${esc(c.bin)}
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.5">
+        Untuk sync di HP/laptop lain, copy Bin ID di atas dan masukkan saat setup di device tersebut.
+      </div>
+      <button class="btn-secondary" onclick="disconnectCloud()" style="color:var(--rust);border-color:var(--rust)">PUTUSKAN CLOUD</button>
+    `;
+  } else {
+    el.innerHTML = `
+      <div style="background:var(--paper);border:1px solid var(--shadow);padding:14px;margin-bottom:12px;font-size:12px;color:var(--muted);line-height:1.6">
+        <b style="color:var(--ink)">Sync data antar device</b> (HP, laptop, tablet) lewat <a href="https://jsonbin.io" target="_blank" style="color:var(--forest)">jsonbin.io</a> — gratis.
+      </div>
+      <button class="btn-primary" onclick="openCloudSetup()">SETUP CLOUD SYNC</button>
+    `;
+  }
+}
+
+function openCloudSetup() {
+  const content = document.getElementById('cloud-modal-content');
+  content.innerHTML = `
+    <div style="font-size:13px;color:var(--ink);line-height:1.6;margin-bottom:14px">
+      <b>Cara setup (gratis):</b>
+      <ol style="margin:8px 0 0 18px;line-height:1.8">
+        <li>Buka <a href="https://jsonbin.io" target="_blank" style="color:var(--forest);font-weight:600">jsonbin.io</a> → Sign Up (Google)</li>
+        <li>Tap avatar pojok kanan atas → <b>Account Settings</b></li>
+        <li>Cari <b>Master Key</b> → klik untuk lihat → Copy</li>
+        <li>Paste di bawah → Hubungkan</li>
+      </ol>
+    </div>
+    <div class="field">
+      <label>Master Key</label>
+      <input type="password" id="cloud-key" placeholder="$2a$10$..." style="font-family:'JetBrains Mono',monospace;font-size:12px"/>
+    </div>
+    <div id="cloud-bin-row" style="display:none">
+      <div class="field">
+        <label>Bin ID (kosong = buat baru)</label>
+        <input type="text" id="cloud-bin" style="font-family:'JetBrains Mono',monospace;font-size:12px"/>
+        <div class="help-text">Untuk sync dari device yang sudah ada datanya, masukkan Bin ID dari device lain.</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin:10px 0">
+      <button onclick="document.getElementById('cloud-bin-row').style.display='block';this.style.display='none'" style="font-size:12px;color:var(--forest);font-weight:600">Sudah punya Bin ID?</button>
+    </div>
+    <div id="cloud-status-msg" style="font-size:12px;color:var(--muted);text-align:center;margin:10px 0"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('m-cloud')">BATAL</button>
+      <button class="btn-save" id="cloud-connect-btn" onclick="connectCloud()">HUBUNGKAN</button>
+    </div>
+  `;
+  openModal('m-cloud');
+}
+
+async function connectCloud() {
+  const key = document.getElementById('cloud-key').value.trim();
+  const binInput = (document.getElementById('cloud-bin')?.value || '').trim();
+  const statusEl = document.getElementById('cloud-status-msg');
+  const btn = document.getElementById('cloud-connect-btn');
+
+  if (!key) { toast('Masukkan Master Key'); return; }
+  statusEl.textContent = 'Menghubungkan...';
+  btn.disabled = true;
+
+  try {
+    let bin = binInput;
+    if (!bin) {
+      statusEl.textContent = 'Membuat storage baru...';
+      bin = await createBin(key);
+    } else {
+      // Pull from existing bin
+      statusEl.textContent = 'Mengambil data dari cloud...';
+      const r = await fetch(`${JB_API}/b/${bin}/latest`, {
+        headers: { 'X-Master-Key': key }
+      });
+      if (!r.ok) throw new Error('Bin ID atau key salah');
+      const j = await r.json();
+      if (j.record && j.record.data) {
+        DATA = { ...DEFAULT_DATA, ...j.record.data };
+      }
+    }
+    DATA.cloud = { key, bin, lastSync: Date.now() };
+    saveData(DATA);
+    closeModal('m-cloud');
+    renderAll();
+    toast('Cloud terhubung');
+  } catch (e) {
+    statusEl.textContent = 'Gagal: ' + e.message;
+    btn.disabled = false;
+  }
+}
+
+function disconnectCloud() {
+  if (!confirm('Putuskan cloud? Data lokal tetap aman, tapi tidak akan sync lagi.')) return;
+  DATA.cloud = {};
+  saveData(DATA);
+  renderSettings();
+  toast('Cloud diputuskan');
+}
+
+/* ═══════════════════════════
+   WELCOME / INIT
+═══════════════════════════ */
+function finishWelcome() {
+  const name = document.getElementById('welcome-name').value.trim() || 'Anda';
+  DATA.profile.name = name;
+  saveData(DATA);
+  closeModal('m-welcome');
+  renderAll();
+}
+
+function init() {
+  // Check if first time
+  if (!DATA.profile.name && DATA.assets.length === 0 && DATA.transactions.length === 0) {
+    setTimeout(() => openModal('m-welcome'), 100);
+  }
+
+  // Try cloud pull on first load if cloud is set up
+  if (DATA.cloud?.key && DATA.cloud?.bin) {
+    cloudPull();
+  }
+
+  renderAll();
+}
+
+// Auto-pull on visibility change (when user comes back to app)
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && DATA.cloud?.key && DATA.cloud?.bin) {
+    cloudPull();
+  }
+});
+
+// Save before unload
+window.addEventListener('beforeunload', () => {
+  if (DATA.cloud?.key && DATA.cloud?.bin) {
+    cloudPush();
+  }
+});
+
+init();
+
+</script>
+</body>
+</html>
